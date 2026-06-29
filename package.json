@@ -1,0 +1,9 @@
+{
+  "name": "command-center",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lawrence Riddick's cross-device life + FPS command center, hosted on Vercel with Vercel KV as the data store.",
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
+  }
+}

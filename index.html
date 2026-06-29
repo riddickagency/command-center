@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Center</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f8fa; color: #1a1a1a; padding: 20px; font-size: 14px; }
+
+  .header { margin-bottom: 20px; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+  .header p { color: #666; font-size: 13px; margin-top: 3px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .full { grid-column: 1 / -1; }
+
+  .section-label { grid-column: 1 / -1; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #2B5EA7; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e2e6ec; }
+  .section-label.first { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .card { background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #e8e8e8; }
+  .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 12px; }
+  .card-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .card-title-row .card-title { margin-bottom: 0; }
+  .card-sub { font-size: 12px; color: #888; margin: -8px 0 12px; line-height: 1.5; }
+
+  .alert { background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .alert-icon { font-size: 18px; flex-shrink: 0; }
+  .alert-text { font-size: 13px; font-weight: 600; color: #7d4e00; }
+
+  .action-alert { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .action-alert .alert-text { color: #991b1b; }
+
+  .good-alert { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .good-alert .alert-text { color: #166534; }
+
+  .revenue-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .revenue-current { font-size: 28px; font-weight: 800; color: #1a1a1a; }
+  .revenue-target { font-size: 13px; color: #888; }
+  .progress-bar { background: #eee; border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #2B5EA7, #4a90d9); height: 100%; border-radius: 99px; width: 5%; }
+  .progress-label { font-size: 11px; color: #888; margin-top: 5px; }
+
+  .project-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .project-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .dot-active { background: #22c55e; }
+  .dot-paused { background: #f59e0b; }
+  .dot-pending { background: #94a3b8; }
+  .project-name { font-weight: 600; font-size: 13px; }
+  .project-detail { font-size: 12px; color: #666; margin-top: 2px; }
+
+  .summary-box { background: #f0f6ff; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #1e3a5f; line-height: 1.6; min-height: 60px; }
+  .summary-box.loading { color: #888; font-style: italic; }
+
+  .timestamp { font-size: 11px; color: #bbb; text-align: right; margin-top: 16px; }
+  .sync-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
+  .sync-dot.ok { background: #22c55e; }
+  .sync-dot.err { background: #ef4444; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
+       color: #999; border-bottom: 1px solid #eee; padding: 6px 6px; }
+  td { padding: 7px 6px; border-bottom: 1px solid #f3f3f3; vertical-align: top; }
+  tr:hover td { background: #fafbfc; }
+  .editable { cursor: text; }
+  .editable:focus { outline: 2px solid #2B5EA7; outline-offset: 1px; background: #fbfdff; }
+  .add-log-btn { font-size: 11px; font-weight: 700; border: none; border-radius: 7px; padding: 6px 12px; background: #1a1a1a; color: #fff; cursor: pointer; flex-shrink: 0; }
+  .del-btn { font-size: 12px; border: none; background: none; color: #c00; cursor: pointer; }
+  .log-form { display: grid; grid-template-columns: 1fr 1.6fr 1.3fr 0.9fr 1.4fr auto; gap: 7px; margin-top: 12px; align-items: end; }
+  .pipe-form { display: grid; grid-template-columns: 1.6fr 1fr 2fr auto; gap: 7px; margin-top: 12px; align-items: end; }
+  .log-form label, .pipe-form label { font-size: 9px; color: #999; display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .log-form input, .log-form select, .pipe-form input, .pipe-form select { font-family: inherit; font-size: 12px; padding: 5px 6px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
+  .log-note { font-size: 11px; color: #999; margin-top: 10px; line-height: 1.5; }
+  .badge-select { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em; border: none; }
+  .b-responded { background: #dcfce7; color: #166534; }
+  .b-overdue { background: #fee2e2; color: #991b1b; }
+  .b-waiting { background: #fef9c3; color: #854d0e; }
+  .b-pending { background: #f1f5f9; color: #475569; }
+  .b-locked { background: #f1f5f9; color: #64748b; }
+  .b-drafted { background: #dbeafe; color: #1e40af; }
+  .b-notstarted { background: #f8fafc; color: #94a3b8; }
+
+  .check-list { list-style: none; }
+  .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f3f3; }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; accent-color: #2B5EA7; }
+  .ci-text { flex: 1; font-size: 13px; line-height: 1.4; }
+  .add-row { display: flex; gap: 8px; margin-top: 10px; }
+  .add-row .ci-input { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
+
+  #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
+</style>
+</head>
+<body>
+
+<div id="boot">Loading your command center…</div>
+
+<div class="header">
+  <h1>Command Center</h1>
+  <p>Lawrence Riddick — FPS, the book, and everything else on your plate. Everything editable below syncs across every device through Vercel KV. <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">connecting…</span></span></p>
+</div>
+
+<div class="alert">
+  <div class="alert-icon">⚠️</div>
+  <div class="alert-text">Oncologist appointment not yet booked — schedule this week.</div>
+</div>
+
+<div class="action-alert">
+  <div class="alert-icon">🔴</div>
+  <div class="alert-text">Holy Spirit Catholic — 37 days since Touch 1, no reply. Final follow-up is drafted in Gmail — review &amp; send.</div>
+</div>
+
+<div class="good-alert">
+  <div class="alert-icon">🟢</div>
+  <div class="alert-text">St. Matthew's check-in also drafted in Gmail — nudges for an actual PTA contact name.</div>
+</div>
+
+<div class="grid">
+
+  <div class="card full" data-checklist="cc_focus_v1">
+    <div class="card-title-row"><div class="card-title">Today's Focus</div></div>
+    <ul class="check-list" id="list-cc_focus_v1"></ul>
+    <div class="add-row">
+      <input class="ci-input" placeholder="Add something to focus on...">
+      <button class="add-log-btn" onclick="addCL('cc_focus_v1', this.previousElementSibling)">Add</button>
+    </div>
+  </div>
+
+  <div class="card full">
+    <div class="card-title">Briefing</div>
+    <div class="summary-box loading" id="summary">Loading your briefing...</div>
+  </div>
+
+  <div class="section-label first">Fingerprint Supply</div>
+
+  <div class="card">
+    <div class="card-title">Revenue Goal</div>
+    <div class="revenue-row">
+      <div class="revenue-current">$500</div>
+      <div class="revenue-target">/ mo &nbsp;→&nbsp; goal: $10,000</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+    <div class="progress-label">5% of target — $9,500/mo gap to close</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Active Projects</div>
+    <div class="project-item">
+      <div class="status-dot dot-active"></div>
+      <div>
+        <div class="project-name">FPS Schools Outreach</div>
+        <div class="project-detail">2 emails sent (Touch 1). 1 forwarded (St. Matt's). Holy Spirit follow-up + St. Matt's check-in drafted 6/28, awaiting send.</div>
+      </div>
+    </div>
+    <div class="project-item">
+      <div class="status-dot dot-paused"></div>
+      <div>
+        <div class="project-name">WP7 Website Rebuild</div>
+        <div class="project-detail">Paused at Phase 2 (theme.json). Laptop only. Not blocking outreach.</div>
+      </div>
+    </div>
+    <div class="project-item">
+      <div class="status-dot dot-pending"></div>
+      <div>
+        <div class="project-name">Schools Landing Page + Lookbook PDF</div>
+        <div class="project-detail">Still needed before broader outreach push. Not started.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full">
+    <div class="card-title-row">
+      <div class="card-title">Schools Pipeline — editable, this is the real tracker</div>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:26%">School</th>
+        <th style="width:16%">Status</th>
+        <th style="width:48%">Detail</th>
+        <th style="width:10%"></th>
+      </tr></thead>
+      <tbody id="pipeBody"></tbody>
+    </table>
+    <div class="pipe-form">
+      <div><label>School</label><input id="np-name" placeholder="School name"></div>
+      <div>
+        <label>Status</label>
+        <select id="np-badge">
+          <option value="notstarted">Not Started</option>
+          <option value="pending">Research Needed</option>
+          <option value="waiting">Waiting</option>
+          <option value="drafted">Drafted</option>
+          <option value="responded">Responded</option>
+          <option value="overdue">Overdue</option>
+          <option value="locked">Monitor Only</option>
+        </select>
+      </div>
+      <div><label>Detail</label><input id="np-detail" placeholder="Contact, notes, next step"></div>
+      <div><button class="add-log-btn" onclick="addPipe()">Add</button></div>
+    </div>
+    <div class="log-note">Click any cell to edit, or use the form above. Saves to Vercel KV — same data on every device.</div>
+  </div>
+
+  <div class="card full">
+    <div class="card-title-row">
+      <div class="card-title">Outreach Log — editable, this is the real log</div>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:12%">Date</th>
+        <th style="width:26%">Organization</th>
+        <th style="width:20%">Type</th>
+        <th style="width:12%">Sent?</th>
+        <th style="width:24%">Response?</th>
+        <th style="width:6%"></th>
+      </tr></thead>
+      <tbody id="logBody"></tbody>
+    </table>
+    <div class="log-form">
+      <div><label>Date</label><input id="nl-date" type="date"></div>
+      <div><label>Organization</label><input id="nl-org" placeholder="School / contact"></div>
+      <div><label>Type</label><input id="nl-type" placeholder="Cold email / Follow-up"></div>
+      <div>
+        <label>Sent?</label>
+        <select id="nl-sent"><option>Yes</option><option>Drafted</option><option>No</option></select>
+      </div>
+      <div><label>Response?</label><input id="nl-response" placeholder="e.g. Replied"></div>
+      <div><button class="add-log-btn" onclick="addLog()">Add</button></div>
+    </div>
+    <div class="log-note">Click any cell to edit, or use the form above. Saves to Vercel KV — same data on every device.</div>
+  </div>
+
+  <div class="section-label">The Book — "What Stares Back"</div>
+
+  <div class="card full">
+    <div class="card-title">Project Status</div>
+    <div class="card-sub">Phase 1 — Capture &amp; Foundation (Months 1–3). Goal: preserve raw material while inside the experience, build the chapter framework. Last session: Discovery (May 2026) — full concept developed. Next step: first capture session.</div>
+  </div>
+
+  <div class="card full" data-checklist="cc_book_scenes_v1">
+    <div class="card-title-row"><div class="card-title">Core Scenes to Capture — check off as captured</div></div>
+    <ul class="check-list" id="list-cc_book_scenes_v1"></ul>
+    <div class="add-row">
+      <input class="ci-input" placeholder="Add a scene or moment...">
+      <button class="add-log-btn" onclick="addCL('cc_book_scenes_v1', this.previousElementSibling)">Add</button>
+    </div>
+  </div>
+
+  <div class="section-label">Health &amp; Medical</div>
+
+  <div class="card full" data-checklist="cc_health_v1">
+    <div class="card-title-row"><div class="card-title">Health — editable</div></div>
+    <ul class="check-list" id="list-cc_health_v1"></ul>
+    <div class="add-row">
+      <input class="ci-input" placeholder="Add an appointment or to-do...">
+      <button class="add-log-btn" onclick="addCL('cc_health_v1', this.previousElementSibling)">Add</button>
+    </div>
+  </div>
+
+  <div class="section-label">Personal Finance</div>
+
+  <div class="card full" data-checklist="cc_finance_v1">
+    <div class="card-title-row"><div class="card-title">Finance — editable</div></div>
+    <ul class="check-list" id="list-cc_finance_v1"></ul>
+    <div class="add-row">
+      <input class="ci-input" placeholder="Add a finance to-do...">
+      <button class="add-log-btn" onclick="addCL('cc_finance_v1', this.previousElementSibling)">Add</button>
+    </div>
+  </div>
+
+  <div class="section-label">Household &amp; Family</div>
+
+  <div class="card full" data-checklist="cc_household_v1">
+    <div class="card-title-row"><div class="card-title">Household & Family — editable</div></div>
+    <ul class="check-list" id="list-cc_household_v1"></ul>
+    <div class="add-row">
+      <input class="ci-input" placeholder="Add a household or family to-do...">
+      <button class="add-log-btn" onclick="addCL('cc_household_v1', this.previousElementSibling)">Add</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="timestamp" id="timestamp"></div>
+
+<script>
+  const now = new Date();
+  document.getElementById('timestamp').textContent =
+    'Last viewed: ' + now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) +
+    ' at ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  // --- KV-backed storage (replaces localStorage; synced via /api/store -> Vercel KV) ---
+  function setSyncStatus(state) {
+    const dot = document.getElementById('syncDot');
+    const txt = document.getElementById('syncText');
+    if (!dot) return;
+    dot.className = 'sync-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
+    txt.textContent = state === 'ok' ? 'synced' : state === 'err' ? 'offline — using last loaded data' : 'connecting…';
+  }
+
+  async function kvGet(key, fallback) {
+    try {
+      const r = await fetch('/api/store?key=' + encodeURIComponent(key));
+      if (!r.ok) throw new Error('bad response');
+      const j = await r.json();
+      setSyncStatus('ok');
+      if (j.value === null || j.value === undefined) {
+        await kvSet(key, fallback);
+        return fallback;
+      }
+      return j.value;
+    } catch (e) {
+      setSyncStatus('err');
+      return fallback;
+    }
+  }
+  async function kvSet(key, value) {
+    try {
+      await fetch('/api/store', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      });
+      setSyncStatus('ok');
+    } catch (e) {
+      setSyncStatus('err');
+    }
+  }
+
+  // --- Schools Pipeline ---
+  const SEED_PIPELINE = [
+    {name:"Holy Spirit Catholic School", badge:"drafted", detail:"Touch 1 sent May 22 to HSA (Kait). No reply in 37 days — past 30-day mark. Breakup-style follow-up drafted 6/28 → hsa@hscatholicschool.com"},
+    {name:"St. Matthew's Catholic School", badge:"drafted", detail:"Ceri McCombie forwarded to PTA (Ann-Marie Fredlan) May 22. Lawrence replied May 26. No word since — check-in drafted 6/28, asking for a contact name directly."},
+    {name:"Holy Family Catholic School", badge:"pending", detail:"Call office: 904-645-9875 · Get parent org name + email"},
+    {name:"Jacksonville Country Day School", badge:"notstarted", detail:"Baymeadows Rd, small elementary (PK–5) — no contact yet"},
+    {name:"Riverside Presbyterian Day School", badge:"notstarted", detail:"Oak St, community-oriented (PK–6) — no contact yet"},
+    {name:"Christ the King Catholic School", badge:"notstarted", detail:"National Blue Ribbon, Larkin Rd (PK–8) — no contact yet"},
+    {name:"Guardian Catholic School", badge:"notstarted", detail:"Brentwood Ave, family feel (PK–8) — no contact yet"},
+    {name:"Grace Lutheran School", badge:"notstarted", detail:"McCormick Rd, elementary — no contact yet"},
+    {name:"San Jose Episcopal Day School", badge:"notstarted", detail:"San Jose Blvd, small classes (PK–6) — no contact yet"},
+    {name:"Sacred Heart School", badge:"notstarted", detail:"Blanding Blvd (PK–8) — no contact yet"},
+    {name:"West Meadows Christian Academy", badge:"notstarted", detail:"~52 students (K–12) — easiest first conversation, no contact yet"},
+    {name:"Impact Christian Academy", badge:"waiting", detail:"Past customer, lost to board-level bureaucracy not relationship issues. Re-engage in 3–6 months, PTA-level entry only — do not go through the board again."},
+    {name:"Harbour Pointe Prep", badge:"locked", detail:"Active Inksoft spirit store already in place. Do not pursue."}
+  ];
+  const BADGE_LABELS = {
+    responded:"Responded", overdue:"Overdue", waiting:"Warm / Stalled", pending:"Research Needed",
+    locked:"Monitor Only", drafted:"Drafted", notstarted:"Not Started"
+  };
+  const BADGE_CLASS = {
+    responded:"b-responded", overdue:"b-overdue", waiting:"b-waiting", pending:"b-pending",
+    locked:"b-locked", drafted:"b-drafted", notstarted:"b-notstarted"
+  };
+
+  let pipe_ = [];
+  function badgeOptions(selected) {
+    return Object.keys(BADGE_LABELS).map(k =>
+      `<option value="${k}" ${k===selected?'selected':''}>${BADGE_LABELS[k]}</option>`
+    ).join("");
+  }
+  function renderPipe() {
+    document.getElementById("pipeBody").innerHTML = pipe_.map((p, i) => `
+      <tr>
+        <td class="editable" contenteditable onblur="updateP(${i},'name',this.innerText)">${p.name}</td>
+        <td>
+          <select class="badge-select ${BADGE_CLASS[p.badge]}" onchange="updateP(${i},'badge',this.value); renderPipe();">
+            ${badgeOptions(p.badge)}
+          </select>
+        </td>
+        <td class="editable" contenteditable onblur="updateP(${i},'detail',this.innerText)">${p.detail}</td>
+        <td><button class="del-btn" onclick="removeP(${i})">✕</button></td>
+      </tr>
+    `).join("");
+  }
+  function updateP(i, field, val) { pipe_[i][field] = val; kvSet('fps_pipeline_v1', pipe_); }
+  function removeP(i) { pipe_.splice(i,1); kvSet('fps_pipeline_v1', pipe_); renderPipe(); }
+  function addPipe() {
+    const name = document.getElementById("np-name").value.trim();
+    if (!name) return;
+    pipe_.push({
+      name,
+      badge: document.getElementById("np-badge").value || "notstarted",
+      detail: document.getElementById("np-detail").value || ""
+    });
+    kvSet('fps_pipeline_v1', pipe_);
+    ["np-name","np-detail"].forEach(id => document.getElementById(id).value = "");
+    renderPipe();
+  }
+
+  // --- Outreach log ---
+  const SEED_LOG = [
+    {date:"2026-05-22", org:"Holy Spirit Catholic (HSA — Kait)", type:"Cold email — Touch 1", sent:"Yes", response:"No reply"},
+    {date:"2026-05-22", org:"St. Matthew's Catholic (Ceri McCombie)", type:"Cold email — Touch 1", sent:"Yes", response:"Forwarded to PTA (Ann-Marie Fredlan)"},
+    {date:"2026-05-26", org:"St. Matthew's Catholic (Ceri McCombie)", type:"Thank-you reply", sent:"Yes", response:"—"},
+    {date:"2026-06-28", org:"Holy Spirit Catholic (HSA)", type:"Follow-up — final touch", sent:"Drafted", response:"Pending send"},
+    {date:"2026-06-28", org:"St. Matthew's Catholic", type:"Check-in", sent:"Drafted", response:"Pending send"}
+  ];
+  let log_ = [];
+  function renderLog() {
+    document.getElementById("logBody").innerHTML = log_.map((l, i) => `
+      <tr>
+        <td class="editable" contenteditable onblur="updateL(${i},'date',this.innerText)">${l.date}</td>
+        <td class="editable" contenteditable onblur="updateL(${i},'org',this.innerText)">${l.org}</td>
+        <td class="editable" contenteditable onblur="updateL(${i},'type',this.innerText)">${l.type}</td>
+        <td class="editable" contenteditable onblur="updateL(${i},'sent',this.innerText)">${l.sent}</td>
+        <td class="editable" contenteditable onblur="updateL(${i},'response',this.innerText)">${l.response}</td>
+        <td><button class="del-btn" onclick="removeL(${i})">✕</button></td>
+      </tr>
+    `).join("");
+  }
+  function updateL(i, field, val) { log_[i][field] = val; kvSet('fps_outreach_log_v1', log_); }
+  function removeL(i) { log_.splice(i,1); kvSet('fps_outreach_log_v1', log_); renderLog(); }
+  function addLog() {
+    const org = document.getElementById("nl-org").value.trim();
+    if (!org) return;
+    log_.push({
+      date: document.getElementById("nl-date").value || new Date().toISOString().slice(0,10),
+      org,
+      type: document.getElementById("nl-type").value || "",
+      sent: document.getElementById("nl-sent").value || "Yes",
+      response: document.getElementById("nl-response").value || ""
+    });
+    kvSet('fps_outreach_log_v1', log_);
+    ["nl-date","nl-org","nl-type","nl-response"].forEach(id => document.getElementById(id).value = "");
+    renderLog();
+  }
+
+  // --- Checklists: Today's Focus, Book scenes, Health, Finance, Household ---
+  const CHECKLIST_SEEDS = {
+    cc_focus_v1: [
+      "Review & send the 2 drafted follow-ups in Gmail (Holy Spirit final touch, St. Matthew's check-in)",
+      "Once sent, log them in the Outreach Log below",
+      "Find PTA contacts for the schools still marked Not Started in the pipeline"
+    ],
+    cc_book_scenes_v1: [
+      "Receiving the breast cancer diagnosis (2021)",
+      "Navigating male breast cancer — the stigma, the silence, the isolation",
+      "The specific habits fought and not yet broken, and why",
+      "Learning his mother's cancer diagnosis (2024)",
+      "Learning it spread to her brain (2025)",
+      "The decision to have her move in — what it cost, what it gave",
+      "A caregiving moment that captures both the tenderness and the exhaustion",
+      "The moment judgment turned to empathy",
+      "What he wants his daughter to know that she doesn't yet",
+      "His coming-of-age story — key scenes TBD"
+    ],
+    cc_health_v1: [
+      "Book the oncologist appointment — still not on the calendar"
+    ],
+    cc_finance_v1: [
+      "2024 taxes — confirm filed or not",
+      "2025 bookkeeping — still open, needs a pass"
+    ],
+    cc_household_v1: [
+      "Family reunion planning (ties to the Better Reunion Tees proof-of-concept)"
+    ]
+  };
+  let CL = {};
+  function renderCL(key) {
+    const el = document.getElementById('list-' + key);
+    if (!el) return;
+    el.innerHTML = CL[key].map((item, i) => `
+      <li class="check-item">
+        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleCL('${key}',${i})">
+        <span class="ci-text editable" contenteditable onblur="editCL('${key}',${i},this.innerText)"
+          style="${item.done ? 'text-decoration:line-through;color:#aaa' : ''}">${item.text}</span>
+        <button class="del-btn" onclick="removeCL('${key}',${i})">✕</button>
+      </li>
+    `).join("");
+  }
+  function toggleCL(key, i) { CL[key][i].done = !CL[key][i].done; kvSet(key, CL[key]); renderCL(key); }
+  function editCL(key, i, val) { CL[key][i].text = val; kvSet(key, CL[key]); }
+  function removeCL(key, i) { CL[key].splice(i, 1); kvSet(key, CL[key]); renderCL(key); }
+  function addCL(key, inputEl) {
+    const v = inputEl.value.trim();
+    if (!v) return;
+    CL[key].push({ text: v, done: false });
+    kvSet(key, CL[key]);
+    inputEl.value = '';
+    renderCL(key);
+  }
+
+  // --- Briefing: computed client-side from whatever's actually in the data right now ---
+  function renderBriefing() {
+    const overdue = pipe_.filter(p => p.badge === 'overdue').length;
+    const drafted = pipe_.filter(p => p.badge === 'drafted').length;
+    const notStarted = pipe_.filter(p => p.badge === 'notstarted' || p.badge === 'pending').length;
+    const pendingSends = log_.filter(l => l.sent === 'Drafted').length;
+    const openFocus = (CL.cc_focus_v1 || []).filter(i => !i.done).length;
+    const openHealth = (CL.cc_health_v1 || []).filter(i => !i.done).length;
+    const openFinance = (CL.cc_finance_v1 || []).filter(i => !i.done).length;
+
+    let parts = [];
+    if (pendingSends > 0) {
+      parts.push(`${pendingSends} drafted message${pendingSends>1?'s':''} sitting in Gmail, ready to send — that's the fastest win on this page.`);
+    }
+    if (overdue > 0) {
+      parts.push(`${overdue} school${overdue>1?'s':''} marked Overdue in the pipeline.`);
+    }
+    if (notStarted > 0) {
+      parts.push(`${notStarted} school${notStarted>1?'s':''} still need a contact found.`);
+    }
+    if (openHealth > 0) {
+      parts.push(`${openHealth} open health item${openHealth>1?'s':''}.`);
+    }
+    if (openFinance > 0) {
+      parts.push(`${openFinance} open finance to-do${openFinance>1?'s':''}.`);
+    }
+    if (openFocus > 0) {
+      parts.push(`${openFocus} item${openFocus>1?'s':''} still open on Today's Focus.`);
+    }
+    const text = parts.length
+      ? parts.join(' ') + ' Pick one and protect time for it today.'
+      : "Nothing flagged right now — pipeline, log, and to-dos are all caught up.";
+    const box = document.getElementById('summary');
+    box.textContent = text;
+    box.classList.remove('loading');
+  }
+
+  // --- Boot sequence ---
+  async function boot() {
+    pipe_ = await kvGet('fps_pipeline_v1', SEED_PIPELINE);
+    renderPipe();
+
+    log_ = await kvGet('fps_outreach_log_v1', SEED_LOG);
+    renderLog();
+
+    for (const key of Object.keys(CHECKLIST_SEEDS)) {
+      const seeded = CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false }));
+      CL[key] = await kvGet(key, seeded);
+      renderCL(key);
+    }
+
+    renderBriefing();
+    document.getElementById('boot').style.display = 'none';
+  }
+  boot();
+</script>
+
+</body>
+</html>
