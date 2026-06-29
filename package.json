@@ -4,7 +4,6 @@
   "private": true,
   "description": "Lawrence Riddick's cross-device life + FPS command center, hosted on Vercel with Upstash Redis (free tier) as the data store.",
   "dependencies": {
-    "@upstash/redis": "^1.31.6",
-    "node-ical": "^0.18.0"
+    "@upstash/redis": "^1.31.6"
   }
 }

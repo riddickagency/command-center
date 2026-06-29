@@ -92,14 +92,6 @@
   .add-row .ci-input { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
 
   #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
-
-  .cal-day { margin-bottom: 10px; }
-  .cal-day:last-child { margin-bottom: 0; }
-  .cal-day-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #2B5EA7; margin-bottom: 4px; }
-  .cal-event { display: flex; gap: 8px; font-size: 13px; padding: 4px 0; color: #1a1a1a; }
-  .cal-event-time { color: #888; min-width: 78px; flex-shrink: 0; }
-  .cal-empty { font-size: 13px; color: #999; }
-  .cal-error { font-size: 13px; color: #c00; }
 </style>
 </head>
 <body>
@@ -135,13 +127,6 @@
       <input class="ci-input" placeholder="Add something to focus on...">
       <button class="add-log-btn" onclick="addCL('cc_focus_v1', this.previousElementSibling)">Add</button>
     </div>
-  </div>
-
-  <div class="card full">
-    <div class="card-title-row">
-      <div class="card-title">This Week</div>
-    </div>
-    <div id="calList" class="card-sub" style="margin-top:0">Loading your calendar...</div>
   </div>
 
   <div class="card full">
@@ -498,53 +483,6 @@
     renderCL(key);
   }
 
-  // --- Calendar: live pull from Google via /api/calendar (server-side, no manual refresh) ---
-  let calEvents = [];
-  let calError = false;
-
-  async function loadCalendar() {
-    try {
-      const r = await fetch('/api/calendar');
-      const j = await r.json();
-      if (j.error) { calError = true; calEvents = []; }
-      else { calEvents = j.events || []; calError = false; }
-    } catch (e) {
-      calError = true;
-      calEvents = [];
-    }
-    renderCalendar();
-  }
-
-  function renderCalendar() {
-    const el = document.getElementById('calList');
-    if (calError) {
-      el.innerHTML = '<div class="cal-error">Could not load calendar — check GCAL_ICS_URL in Vercel env vars.</div>';
-      return;
-    }
-    if (!calEvents.length) {
-      el.innerHTML = '<div class="cal-empty">Nothing on the calendar in the next 7 days.</div>';
-      return;
-    }
-    const byDay = {};
-    calEvents.forEach(ev => {
-      const d = new Date(ev.start);
-      const dayKey = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-      if (!byDay[dayKey]) byDay[dayKey] = [];
-      byDay[dayKey].push(ev);
-    });
-    el.innerHTML = Object.keys(byDay).map(day => `
-      <div class="cal-day">
-        <div class="cal-day-label">${day}</div>
-        ${byDay[day].map(ev => `
-          <div class="cal-event">
-            <span class="cal-event-time">${ev.allDay ? 'All day' : new Date(ev.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
-            <span>${ev.title}</span>
-          </div>
-        `).join("")}
-      </div>
-    `).join("");
-  }
-
   // --- Briefing: computed client-side from whatever's actually in the data right now ---
   function renderBriefing() {
     const overdue = pipe_.filter(p => p.badge === 'overdue').length;
@@ -556,15 +494,6 @@
     const openFinance = (CL.cc_finance_v1 || []).filter(i => !i.done).length;
 
     let parts = [];
-    if (!calError && calEvents.length) {
-      const next = calEvents[0];
-      const nextWhen = next.allDay
-        ? 'today (all day)'
-        : new Date(next.start).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' });
-      parts.push(`${calEvents.length} thing${calEvents.length>1?'s':''} on the calendar this week — next up: "${next.title}" ${nextWhen}.`);
-    } else if (!calError) {
-      parts.push("Calendar's clear for the next 7 days.");
-    }
     if (pendingSends > 0) {
       parts.push(`${pendingSends} drafted message${pendingSends>1?'s':''} sitting in Gmail, ready to send — that's the fastest win on this page.`);
     }
@@ -605,7 +534,6 @@
       renderCL(key);
     }
 
-    await loadCalendar();
     renderBriefing();
     document.getElementById('boot').style.display = 'none';
   }
