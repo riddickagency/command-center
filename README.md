@@ -28,16 +28,21 @@ git push -u origin main
 2. Select the `command-center` repo → Import.
 3. Leave all settings as default (no build command needed — it's a static `index.html` plus one serverless function) → Deploy.
 
-## 3. Connect a KV database (this is what makes it cross-device)
+## 3. Create a free Redis database on Upstash (this is what makes it cross-device)
 
-1. In the project on Vercel, open the **Storage** tab.
-2. Create a new **KV** database (Redis-backed). Free tier is plenty for this.
-3. Connect it to this project — Vercel automatically adds the `KV_REST_API_URL` / `KV_REST_API_TOKEN` environment variables for you. No secrets to copy/paste.
-4. Go to **Deployments** → redeploy the latest one (so the function picks up the new env vars).
+Vercel's own "KV" product now runs through a paid Marketplace plan, so we're going straight to the source instead — Upstash's free tier (500K commands/month, 256MB) is more than enough for this.
+
+1. Go to upstash.com and sign up (free — GitHub login works there too).
+2. Create a new **Redis** database. Any region close to you is fine.
+3. On the database page, find the **REST API** section and copy the two values shown: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+4. Back in your Vercel project, go to **Settings → Environment Variables** and add both:
+   - `UPSTASH_REDIS_REST_URL` → paste the URL
+   - `UPSTASH_REDIS_REST_TOKEN` → paste the token
+5. Go to **Deployments** → redeploy the latest one (so the function picks up the new env vars).
 
 ## 4. Use it
 
-Open the deployment URL (e.g. `command-center-yourname.vercel.app`) on your laptop and your phone. Anything you edit — pipeline rows, outreach log, checklists — saves to Vercel KV and shows up on every device. The small dot next to the header text shows sync status (green = saved, gray = connecting, red = offline).
+Open the deployment URL (e.g. `command-center-yourname.vercel.app`) on your laptop and your phone. Anything you edit — pipeline rows, outreach log, checklists — saves to Upstash and shows up on every device. The small dot next to the header text shows sync status (green = saved, gray = connecting, red = offline).
 
 ## Notes
 
