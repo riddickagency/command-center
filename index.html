@@ -25,64 +25,34 @@
   .card-title-row .card-title { margin-bottom: 0; }
   .card-sub { font-size: 12px; color: #888; margin: -8px 0 12px; line-height: 1.5; }
 
-  .alert { background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .alert-icon { font-size: 18px; flex-shrink: 0; }
-  .alert-text { font-size: 13px; font-weight: 600; color: #7d4e00; }
-
-  .action-alert { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .action-alert .alert-text { color: #991b1b; }
-
-  .good-alert { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .good-alert .alert-text { color: #166534; }
-
-  .revenue-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
-  .revenue-current { font-size: 28px; font-weight: 800; color: #1a1a1a; }
-  .revenue-target { font-size: 13px; color: #888; }
-  .progress-bar { background: #eee; border-radius: 99px; height: 8px; overflow: hidden; }
-  .progress-fill { background: linear-gradient(90deg, #2B5EA7, #4a90d9); height: 100%; border-radius: 99px; width: 5%; }
-  .progress-label { font-size: 11px; color: #888; margin-top: 5px; }
-
-  .project-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-  .project-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-  .dot-active { background: #22c55e; }
-  .dot-paused { background: #f59e0b; }
-  .dot-pending { background: #94a3b8; }
-  .project-name { font-weight: 600; font-size: 13px; }
-  .project-detail { font-size: 12px; color: #666; margin-top: 2px; }
-
   .summary-box { background: #f0f6ff; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #1e3a5f; line-height: 1.6; min-height: 60px; }
   .summary-box.loading { color: #888; font-style: italic; }
 
-  .timestamp { font-size: 11px; color: #bbb; text-align: right; margin-top: 16px; }
   .sync-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
   .sync-dot.ok { background: #22c55e; }
   .sync-dot.err { background: #ef4444; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
-       color: #999; border-bottom: 1px solid #eee; padding: 6px 6px; }
-  td { padding: 7px 6px; border-bottom: 1px solid #f3f3f3; vertical-align: top; }
-  tr:hover td { background: #fafbfc; }
-  .editable { cursor: text; }
-  .editable:focus { outline: 2px solid #2B5EA7; outline-offset: 1px; background: #fbfdff; }
-  .add-log-btn { font-size: 11px; font-weight: 700; border: none; border-radius: 7px; padding: 6px 12px; background: #1a1a1a; color: #fff; cursor: pointer; flex-shrink: 0; }
-  .del-btn { font-size: 12px; border: none; background: none; color: #c00; cursor: pointer; }
-  .log-form { display: grid; grid-template-columns: 1fr 1.6fr 1.3fr 0.9fr 1.4fr auto; gap: 7px; margin-top: 12px; align-items: end; }
-  .pipe-form { display: grid; grid-template-columns: 1.6fr 1fr 2fr auto; gap: 7px; margin-top: 12px; align-items: end; }
-  .log-form label, .pipe-form label { font-size: 9px; color: #999; display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .log-form input, .log-form select, .pipe-form input, .pipe-form select { font-family: inherit; font-size: 12px; padding: 5px 6px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
-  .log-note { font-size: 11px; color: #999; margin-top: 10px; line-height: 1.5; }
-  .badge-select { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em; border: none; }
-  .b-responded { background: #dcfce7; color: #166534; }
-  .b-overdue { background: #fee2e2; color: #991b1b; }
-  .b-waiting { background: #fef9c3; color: #854d0e; }
-  .b-pending { background: #f1f5f9; color: #475569; }
-  .b-locked { background: #f1f5f9; color: #64748b; }
-  .b-drafted { background: #dbeafe; color: #1e40af; }
-  .b-notstarted { background: #f8fafc; color: #94a3b8; }
+  .timestamp { font-size: 11px; color: #bbb; text-align: right; margin-top: 16px; }
 
+  /* Revenue / scorecard */
+  .revenue-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .revenue-current { font-size: 28px; font-weight: 800; color: #1a1a1a; }
+  .revenue-target { font-size: 13px; color: #888; }
+  .progress-bar { background: #eee; border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #2B5EA7, #4a90d9); height: 100%; border-radius: 99px; }
+  .progress-label { font-size: 11px; color: #888; margin-top: 5px; }
+
+  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .score-item { text-align: center; padding: 10px 6px; background: #f8fafc; border-radius: 8px; }
+  .score-num { font-size: 22px; font-weight: 800; color: #1a1a1a; }
+  .score-num.warn { color: #dc2626; }
+  .score-num.good { color: #16a34a; }
+  .score-label { font-size: 10px; color: #999; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .pipeline-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; font-weight: 600; color: #2B5EA7; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 7px; padding: 7px 12px; text-decoration: none; cursor: default; }
+
+  /* Checklists */
   .check-list { list-style: none; }
   .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f3f3; }
   .check-item:last-child { border-bottom: none; }
@@ -90,10 +60,10 @@
   .ci-text { flex: 1; font-size: 13px; line-height: 1.4; }
   .add-row { display: flex; gap: 8px; margin-top: 10px; }
   .add-row .ci-input { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
+  .add-log-btn { font-size: 11px; font-weight: 700; border: none; border-radius: 7px; padding: 6px 12px; background: #1a1a1a; color: #fff; cursor: pointer; flex-shrink: 0; }
+  .del-btn { font-size: 12px; border: none; background: none; color: #c00; cursor: pointer; }
 
-  #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
-
-  /* Todoist task lists */
+  /* Todoist task list */
   .td-list { list-style: none; }
   .td-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f3f3; }
   .td-item:last-child { border-bottom: none; }
@@ -102,11 +72,11 @@
   .td-desc { font-size: 11px; color: #999; margin-top: 2px; line-height: 1.4; }
   .td-meta { font-size: 11px; color: #999; margin-top: 2px; }
   .td-meta.overdue { color: #dc2626; font-weight: 600; }
-  .td-section-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #2B5EA7; padding: 12px 0 4px; border-top: 1px solid #f0f0f0; margin-top: 4px; }
-  .td-section-head:first-child { border-top: none; margin-top: 0; padding-top: 4px; }
-  .td-empty { font-size: 13px; color: #aaa; padding: 12px 0; font-style: italic; }
+  .td-empty { font-size: 13px; color: #aaa; font-style: italic; padding: 8px 0; }
   .td-error { font-size: 12px; color: #dc2626; padding: 8px 0; }
   .td-completing { opacity: 0.35; transition: opacity 0.4s; }
+
+  #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
 </style>
 </head>
 <body>
@@ -115,148 +85,55 @@
 
 <div class="header">
   <h1>Command Center</h1>
-  <p>Lawrence Riddick — FPS, the book, and everything else on your plate. Everything editable below syncs across every device through Vercel KV. <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">connecting…</span></span></p>
-</div>
-
-<div class="alert">
-  <div class="alert-icon">⚠️</div>
-  <div class="alert-text">Oncologist appointment not yet booked — schedule this week.</div>
-</div>
-
-<div class="action-alert">
-  <div class="alert-icon">🔴</div>
-  <div class="alert-text">Holy Spirit Catholic — 37 days since Touch 1, no reply. Final follow-up is drafted in Gmail — review &amp; send.</div>
-</div>
-
-<div class="good-alert">
-  <div class="alert-icon">🟢</div>
-  <div class="alert-text">St. Matthew's check-in also drafted in Gmail — nudges for an actual PTA contact name.</div>
+  <p>Lawrence Riddick — your life, all in one place. <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">connecting…</span></span></p>
 </div>
 
 <div class="grid">
 
+  <!-- Today's Focus: live from Todoist -->
   <div class="card full">
     <div class="card-title-row">
-      <div class="card-title">Today's Focus — from Todoist</div>
-      <span class="sync-pill" id="tdTodayStatus" style="font-size:11px;color:#aaa"></span>
+      <div class="card-title">Today's Focus — Todoist</div>
+      <span id="tdTodayStatus" style="font-size:11px;color:#aaa"></span>
     </div>
     <ul class="td-list" id="todayList">
       <li class="td-item"><span class="td-text td-empty">Loading from Todoist…</span></li>
     </ul>
   </div>
 
+  <!-- Briefing -->
   <div class="card full">
     <div class="card-title">Briefing</div>
     <div class="summary-box loading" id="summary">Loading your briefing...</div>
   </div>
 
+  <!-- ── Fingerprint Supply ── -->
   <div class="section-label first">Fingerprint Supply</div>
 
+  <!-- Revenue Goal -->
   <div class="card">
     <div class="card-title">Revenue Goal</div>
     <div class="revenue-row">
-      <div class="revenue-current">$500</div>
+      <div class="revenue-current" id="revenueAmt">$500</div>
       <div class="revenue-target">/ mo &nbsp;→&nbsp; goal: $10,000</div>
     </div>
-    <div class="progress-bar"><div class="progress-fill"></div></div>
-    <div class="progress-label">5% of target — $9,500/mo gap to close</div>
+    <div class="progress-bar"><div class="progress-fill" id="revBar" style="width:5%"></div></div>
+    <div class="progress-label" id="revLabel">5% of target — $9,500/mo gap to close</div>
   </div>
 
+  <!-- Pipeline Scorecard -->
   <div class="card">
-    <div class="card-title">Active Projects</div>
-    <div class="project-item">
-      <div class="status-dot dot-active"></div>
-      <div>
-        <div class="project-name">FPS Schools Outreach</div>
-        <div class="project-detail">2 emails sent (Touch 1). 1 forwarded (St. Matt's). Holy Spirit follow-up + St. Matt's check-in drafted 6/28, awaiting send.</div>
-      </div>
+    <div class="card-title">Schools Pipeline</div>
+    <div class="score-grid">
+      <div class="score-item"><div class="score-num" id="sc-total">—</div><div class="score-label">Total</div></div>
+      <div class="score-item"><div class="score-num good" id="sc-responded">—</div><div class="score-label">Responded</div></div>
+      <div class="score-item"><div class="score-num" id="sc-drafted">—</div><div class="score-label">Drafted</div></div>
+      <div class="score-item"><div class="score-num warn" id="sc-overdue">—</div><div class="score-label">Overdue</div></div>
     </div>
-    <div class="project-item">
-      <div class="status-dot dot-paused"></div>
-      <div>
-        <div class="project-name">WP7 Website Rebuild</div>
-        <div class="project-detail">Paused at Phase 2 (theme.json). Laptop only. Not blocking outreach.</div>
-      </div>
-    </div>
-    <div class="project-item">
-      <div class="status-dot dot-pending"></div>
-      <div>
-        <div class="project-name">Schools Landing Page + Lookbook PDF</div>
-        <div class="project-detail">Still needed before broader outreach push. Not started.</div>
-      </div>
-    </div>
+    <div class="pipeline-link">📋 Open FPS Pipeline in Cowork sidebar for details</div>
   </div>
 
-  <div class="card full">
-    <div class="card-title-row">
-      <div class="card-title">Schools Pipeline — editable, this is the real tracker</div>
-    </div>
-    <table>
-      <thead><tr>
-        <th style="width:26%">School</th>
-        <th style="width:16%">Status</th>
-        <th style="width:48%">Detail</th>
-        <th style="width:10%"></th>
-      </tr></thead>
-      <tbody id="pipeBody"></tbody>
-    </table>
-    <div class="pipe-form">
-      <div><label>School</label><input id="np-name" placeholder="School name"></div>
-      <div>
-        <label>Status</label>
-        <select id="np-badge">
-          <option value="notstarted">Not Started</option>
-          <option value="pending">Research Needed</option>
-          <option value="waiting">Waiting</option>
-          <option value="drafted">Drafted</option>
-          <option value="responded">Responded</option>
-          <option value="overdue">Overdue</option>
-          <option value="locked">Monitor Only</option>
-        </select>
-      </div>
-      <div><label>Detail</label><input id="np-detail" placeholder="Contact, notes, next step"></div>
-      <div><button class="add-log-btn" onclick="addPipe()">Add</button></div>
-    </div>
-    <div class="log-note">Click any cell to edit, or use the form above. Saves to Vercel KV — same data on every device.</div>
-  </div>
-
-  <div class="card full">
-    <div class="card-title-row">
-      <div class="card-title">FPS Pipeline Tasks — from Todoist</div>
-      <span class="sync-pill" id="tdFpsStatus" style="font-size:11px;color:#aaa"></span>
-    </div>
-    <div id="fpsTodoist"><div class="td-empty">Loading from Todoist…</div></div>
-  </div>
-
-  <div class="card full">
-    <div class="card-title-row">
-      <div class="card-title">Outreach Log — editable, this is the real log</div>
-    </div>
-    <table>
-      <thead><tr>
-        <th style="width:12%">Date</th>
-        <th style="width:26%">Organization</th>
-        <th style="width:20%">Type</th>
-        <th style="width:12%">Sent?</th>
-        <th style="width:24%">Response?</th>
-        <th style="width:6%"></th>
-      </tr></thead>
-      <tbody id="logBody"></tbody>
-    </table>
-    <div class="log-form">
-      <div><label>Date</label><input id="nl-date" type="date"></div>
-      <div><label>Organization</label><input id="nl-org" placeholder="School / contact"></div>
-      <div><label>Type</label><input id="nl-type" placeholder="Cold email / Follow-up"></div>
-      <div>
-        <label>Sent?</label>
-        <select id="nl-sent"><option>Yes</option><option>Drafted</option><option>No</option></select>
-      </div>
-      <div><label>Response?</label><input id="nl-response" placeholder="e.g. Replied"></div>
-      <div><button class="add-log-btn" onclick="addLog()">Add</button></div>
-    </div>
-    <div class="log-note">Click any cell to edit, or use the form above. Saves to Vercel KV — same data on every device.</div>
-  </div>
-
+  <!-- ── The Book ── -->
   <div class="section-label">The Book — "What Stares Back"</div>
 
   <div class="card full">
@@ -265,7 +142,7 @@
   </div>
 
   <div class="card full" data-checklist="cc_book_scenes_v1">
-    <div class="card-title-row"><div class="card-title">Core Scenes to Capture — check off as captured</div></div>
+    <div class="card-title-row"><div class="card-title">Core Scenes to Capture</div></div>
     <ul class="check-list" id="list-cc_book_scenes_v1"></ul>
     <div class="add-row">
       <input class="ci-input" placeholder="Add a scene or moment...">
@@ -273,6 +150,7 @@
     </div>
   </div>
 
+  <!-- ── Health ── -->
   <div class="section-label">Health &amp; Medical</div>
 
   <div class="card full" data-checklist="cc_health_v1">
@@ -284,6 +162,7 @@
     </div>
   </div>
 
+  <!-- ── Finance ── -->
   <div class="section-label">Personal Finance</div>
 
   <div class="card full" data-checklist="cc_finance_v1">
@@ -295,10 +174,11 @@
     </div>
   </div>
 
+  <!-- ── Household ── -->
   <div class="section-label">Household &amp; Family</div>
 
   <div class="card full" data-checklist="cc_household_v1">
-    <div class="card-title-row"><div class="card-title">Household & Family — editable</div></div>
+    <div class="card-title-row"><div class="card-title">Household &amp; Family — editable</div></div>
     <ul class="check-list" id="list-cc_household_v1"></ul>
     <div class="add-row">
       <input class="ci-input" placeholder="Add a household or family to-do...">
@@ -316,143 +196,68 @@
     'Last viewed: ' + now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) +
     ' at ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-  // --- KV-backed storage (replaces localStorage; synced via /api/store -> Vercel KV) ---
+  const API = 'https://command-center-one-snowy.vercel.app';
+
+  // ── Sync status ────────────────────────────────────────────────────────────
   function setSyncStatus(state) {
     const dot = document.getElementById('syncDot');
     const txt = document.getElementById('syncText');
     if (!dot) return;
     dot.className = 'sync-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
-    txt.textContent = state === 'ok' ? 'synced' : state === 'err' ? 'offline — using last loaded data' : 'connecting…';
+    txt.textContent = state === 'ok' ? 'synced' : state === 'err' ? 'offline' : 'connecting…';
   }
 
+  // ── KV helpers ────────────────────────────────────────────────────────────
   async function kvGet(key, fallback) {
     try {
-      const r = await fetch('/api/store?key=' + encodeURIComponent(key));
-      if (!r.ok) throw new Error('bad response');
+      const r = await fetch(`${API}/api/store?key=${encodeURIComponent(key)}`);
+      if (!r.ok) throw new Error();
       const j = await r.json();
       setSyncStatus('ok');
-      if (j.value === null || j.value === undefined) {
-        await kvSet(key, fallback);
-        return fallback;
-      }
+      if (j.value === null || j.value === undefined) { await kvSet(key, fallback); return fallback; }
       return j.value;
-    } catch (e) {
-      setSyncStatus('err');
-      return fallback;
-    }
+    } catch { setSyncStatus('err'); return fallback; }
   }
   async function kvSet(key, value) {
     try {
-      await fetch('/api/store', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch(`${API}/api/store`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, value })
       });
       setSyncStatus('ok');
-    } catch (e) {
-      setSyncStatus('err');
-    }
+    } catch { setSyncStatus('err'); }
   }
 
-  // --- Schools Pipeline ---
+  // ── Pipeline scorecard ───────────────────────────────────────────────────
   const SEED_PIPELINE = [
-    {name:"Holy Spirit Catholic School", badge:"drafted", detail:"Touch 1 sent May 22 to HSA (Kait). No reply in 37 days — past 30-day mark. Breakup-style follow-up drafted 6/28 → hsa@hscatholicschool.com"},
-    {name:"St. Matthew's Catholic School", badge:"drafted", detail:"Ceri McCombie forwarded to PTA (Ann-Marie Fredlan) May 22. Lawrence replied May 26. No word since — check-in drafted 6/28, asking for a contact name directly."},
-    {name:"Holy Family Catholic School", badge:"pending", detail:"Call office: 904-645-9875 · Get parent org name + email"},
-    {name:"Jacksonville Country Day School", badge:"drafted", detail:"Contact found via staff directory: Nathan Renstrom, Director of Auxiliary Services — nrenstrom@jcds.com. Touch 1 drafted 6/28, not yet sent."},
-    {name:"Riverside Presbyterian Day School", badge:"notstarted", detail:"Oak St, community-oriented (PK–6) — no contact yet"},
-    {name:"Christ the King Catholic School", badge:"notstarted", detail:"National Blue Ribbon, Larkin Rd (PK–8) — no contact yet"},
-    {name:"Guardian Catholic School", badge:"notstarted", detail:"Brentwood Ave, family feel (PK–8) — no contact yet"},
-    {name:"Grace Lutheran School", badge:"notstarted", detail:"McCormick Rd, elementary — no contact yet"},
-    {name:"San Jose Episcopal Day School", badge:"notstarted", detail:"San Jose Blvd, small classes (PK–6) — no contact yet"},
-    {name:"Sacred Heart School", badge:"notstarted", detail:"Blanding Blvd (PK–8) — no contact yet"},
-    {name:"West Meadows Christian Academy", badge:"notstarted", detail:"~52 students (K–12) — easiest first conversation, no contact yet"},
-    {name:"Impact Christian Academy", badge:"waiting", detail:"Past customer, lost to board-level bureaucracy not relationship issues. Re-engage in 3–6 months, PTA-level entry only — do not go through the board again."},
-    {name:"Harbour Pointe Prep", badge:"locked", detail:"Active Inksoft spirit store already in place. Do not pursue."}
+    {name:"Holy Spirit Catholic School", badge:"notstarted", detail:""},
+    {name:"St. Matthew's Catholic School", badge:"notstarted", detail:""},
+    {name:"Holy Family Catholic School", badge:"pending", detail:""},
+    {name:"Jacksonville Country Day School", badge:"drafted", detail:"Contact: Nathan Renstrom, nrenstrom@jcds.com. Touch 1 drafted 7/14."},
+    {name:"Riverside Presbyterian Day School", badge:"notstarted", detail:""},
+    {name:"Christ the King Catholic School", badge:"notstarted", detail:""},
+    {name:"Guardian Catholic School", badge:"notstarted", detail:""},
+    {name:"Grace Lutheran School", badge:"notstarted", detail:""},
+    {name:"San Jose Episcopal Day School", badge:"notstarted", detail:""},
+    {name:"Sacred Heart School", badge:"notstarted", detail:""},
+    {name:"West Meadows Christian Academy", badge:"notstarted", detail:""},
+    {name:"Impact Christian Academy", badge:"waiting", detail:"Re-engage in 3–6 months, PTA-level entry only."},
+    {name:"Harbour Pointe Prep", badge:"locked", detail:"Active Inksoft spirit store. Do not pursue."}
   ];
-  const BADGE_LABELS = {
-    responded:"Responded", overdue:"Overdue", waiting:"Warm / Stalled", pending:"Research Needed",
-    locked:"Monitor Only", drafted:"Drafted", notstarted:"Not Started"
-  };
-  const BADGE_CLASS = {
-    responded:"b-responded", overdue:"b-overdue", waiting:"b-waiting", pending:"b-pending",
-    locked:"b-locked", drafted:"b-drafted", notstarted:"b-notstarted"
-  };
 
   let pipe_ = [];
-  function badgeOptions(selected) {
-    return Object.keys(BADGE_LABELS).map(k =>
-      `<option value="${k}" ${k===selected?'selected':''}>${BADGE_LABELS[k]}</option>`
-    ).join("");
-  }
-  function renderPipe() {
-    document.getElementById("pipeBody").innerHTML = pipe_.map((p, i) => `
-      <tr>
-        <td class="editable" contenteditable onblur="updateP(${i},'name',this.innerText)">${p.name}</td>
-        <td>
-          <select class="badge-select ${BADGE_CLASS[p.badge]}" onchange="updateP(${i},'badge',this.value); renderPipe();">
-            ${badgeOptions(p.badge)}
-          </select>
-        </td>
-        <td class="editable" contenteditable onblur="updateP(${i},'detail',this.innerText)">${p.detail}</td>
-        <td><button class="del-btn" onclick="removeP(${i})">✕</button></td>
-      </tr>
-    `).join("");
-  }
-  function updateP(i, field, val) { pipe_[i][field] = val; kvSet('fps_pipeline_v1', pipe_); }
-  function removeP(i) { pipe_.splice(i,1); kvSet('fps_pipeline_v1', pipe_); renderPipe(); }
-  function addPipe() {
-    const name = document.getElementById("np-name").value.trim();
-    if (!name) return;
-    pipe_.push({
-      name,
-      badge: document.getElementById("np-badge").value || "notstarted",
-      detail: document.getElementById("np-detail").value || ""
-    });
-    kvSet('fps_pipeline_v1', pipe_);
-    ["np-name","np-detail"].forEach(id => document.getElementById(id).value = "");
-    renderPipe();
+  function renderScorecard() {
+    const total     = pipe_.length;
+    const responded = pipe_.filter(p => p.badge === 'responded').length;
+    const drafted   = pipe_.filter(p => p.badge === 'drafted').length;
+    const overdue   = pipe_.filter(p => p.badge === 'overdue').length;
+    document.getElementById('sc-total').textContent     = total;
+    document.getElementById('sc-responded').textContent = responded;
+    document.getElementById('sc-drafted').textContent   = drafted;
+    document.getElementById('sc-overdue').textContent   = overdue;
   }
 
-  // --- Outreach log ---
-  const SEED_LOG = [
-    {date:"2026-05-22", org:"Holy Spirit Catholic (HSA — Kait)", type:"Cold email — Touch 1", sent:"Yes", response:"No reply"},
-    {date:"2026-05-22", org:"St. Matthew's Catholic (Ceri McCombie)", type:"Cold email — Touch 1", sent:"Yes", response:"Forwarded to PTA (Ann-Marie Fredlan)"},
-    {date:"2026-05-26", org:"St. Matthew's Catholic (Ceri McCombie)", type:"Thank-you reply", sent:"Yes", response:"—"},
-    {date:"2026-06-28", org:"Holy Spirit Catholic (HSA)", type:"Follow-up — final touch", sent:"Drafted", response:"Pending send"},
-    {date:"2026-06-28", org:"St. Matthew's Catholic", type:"Check-in", sent:"Drafted", response:"Pending send"}
-  ];
-  let log_ = [];
-  function renderLog() {
-    document.getElementById("logBody").innerHTML = log_.map((l, i) => `
-      <tr>
-        <td class="editable" contenteditable onblur="updateL(${i},'date',this.innerText)">${l.date}</td>
-        <td class="editable" contenteditable onblur="updateL(${i},'org',this.innerText)">${l.org}</td>
-        <td class="editable" contenteditable onblur="updateL(${i},'type',this.innerText)">${l.type}</td>
-        <td class="editable" contenteditable onblur="updateL(${i},'sent',this.innerText)">${l.sent}</td>
-        <td class="editable" contenteditable onblur="updateL(${i},'response',this.innerText)">${l.response}</td>
-        <td><button class="del-btn" onclick="removeL(${i})">✕</button></td>
-      </tr>
-    `).join("");
-  }
-  function updateL(i, field, val) { log_[i][field] = val; kvSet('fps_outreach_log_v1', log_); }
-  function removeL(i) { log_.splice(i,1); kvSet('fps_outreach_log_v1', log_); renderLog(); }
-  function addLog() {
-    const org = document.getElementById("nl-org").value.trim();
-    if (!org) return;
-    log_.push({
-      date: document.getElementById("nl-date").value || new Date().toISOString().slice(0,10),
-      org,
-      type: document.getElementById("nl-type").value || "",
-      sent: document.getElementById("nl-sent").value || "Yes",
-      response: document.getElementById("nl-response").value || ""
-    });
-    kvSet('fps_outreach_log_v1', log_);
-    ["nl-date","nl-org","nl-type","nl-response"].forEach(id => document.getElementById(id).value = "");
-    renderLog();
-  }
-
-  // --- Checklists: Today's Focus, Book scenes, Health, Finance, Household ---
+  // ── Checklists ───────────────────────────────────────────────────────────
   const CHECKLIST_SEEDS = {
     cc_book_scenes_v1: [
       "Receiving the breast cancer diagnosis (2021)",
@@ -484,49 +289,35 @@
     el.innerHTML = CL[key].map((item, i) => `
       <li class="check-item">
         <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleCL('${key}',${i})">
-        <span class="ci-text editable" contenteditable onblur="editCL('${key}',${i},this.innerText)"
-          style="${item.done ? 'text-decoration:line-through;color:#aaa' : ''}">${item.text}</span>
+        <span class="ci-text" style="${item.done ? 'text-decoration:line-through;color:#aaa' : ''}">${item.text}</span>
         <button class="del-btn" onclick="removeCL('${key}',${i})">✕</button>
-      </li>
-    `).join("");
+      </li>`).join('');
   }
   function toggleCL(key, i) { CL[key][i].done = !CL[key][i].done; kvSet(key, CL[key]); renderCL(key); }
-  function editCL(key, i, val) { CL[key][i].text = val; kvSet(key, CL[key]); }
   function removeCL(key, i) { CL[key].splice(i, 1); kvSet(key, CL[key]); renderCL(key); }
   function addCL(key, inputEl) {
-    const v = inputEl.value.trim();
-    if (!v) return;
+    const v = inputEl.value.trim(); if (!v) return;
     CL[key].push({ text: v, done: false });
-    kvSet(key, CL[key]);
-    inputEl.value = '';
-    renderCL(key);
+    kvSet(key, CL[key]); inputEl.value = ''; renderCL(key);
   }
 
-  // --- Todoist integration ---
-  const FPS_SECTIONS = {
-    '6h58635wHMmXPPcr': 'Send Now',
-    '6h58637frmG2g2PJ': 'Awaiting Reply',
-    '6h58636j5Gc3JRrr': 'Weekly Block',
-    '6h58636C4hjc52XJ': 'Closed / Cold'
-  };
-  const FPS_SECTION_ORDER = ['6h58635wHMmXPPcr','6h58637frmG2g2PJ','6h58636j5Gc3JRrr','6h58636C4hjc52XJ'];
-
-  let todayTasks_ = [];   // null = load error
-  let fpsTasks_   = [];   // null = load error
+  // ── Todoist ──────────────────────────────────────────────────────────────
+  let todayTasks_ = [];
 
   async function loadTodayTasks() {
     const pill = document.getElementById('tdTodayStatus');
     try {
-      const r = await fetch('/api/todoist?type=today');
-      if (!r.ok) throw new Error('bad response');
+      const r = await fetch(`${API}/api/todoist?type=today`);
+      if (!r.ok) throw new Error();
       const j = await r.json();
       todayTasks_ = j.tasks || [];
       if (pill) pill.textContent = `${todayTasks_.length} task${todayTasks_.length !== 1 ? 's' : ''}`;
-    } catch(e) {
+    } catch {
       todayTasks_ = null;
       if (pill) pill.textContent = 'offline';
     }
     renderTodayTasks();
+    renderBriefing();
   }
 
   function renderTodayTasks() {
@@ -555,135 +346,61 @@
     }).join('');
   }
 
-  async function loadFpsTasks() {
-    const pill = document.getElementById('tdFpsStatus');
-    try {
-      const r = await fetch('/api/todoist?type=fps');
-      if (!r.ok) throw new Error('bad response');
-      const j = await r.json();
-      fpsTasks_ = j.tasks || [];
-      if (pill) pill.textContent = `${fpsTasks_.length} open`;
-    } catch(e) {
-      fpsTasks_ = null;
-      if (pill) pill.textContent = 'offline';
-    }
-    renderFpsTasks();
-  }
-
-  function renderFpsTasks() {
-    const el = document.getElementById('fpsTodoist');
-    if (!el) return;
-    if (fpsTasks_ === null) {
-      el.innerHTML = '<div class="td-error">Could not load Todoist — check TODOIST_API_TOKEN in Vercel env vars.</div>';
-      return;
-    }
-    if (fpsTasks_.length === 0) {
-      el.innerHTML = '<div class="td-empty">No open FPS tasks in Todoist.</div>';
-      return;
-    }
-    const today = new Date().toISOString().slice(0, 10);
-    // Group by section
-    const grouped = {};
-    fpsTasks_.forEach(t => { const s = t.section_id || 'none'; (grouped[s] = grouped[s] || []).push(t); });
-    const order = [...FPS_SECTION_ORDER, 'none'];
-    let html = '';
-    order.forEach(secId => {
-      const tasks = grouped[secId];
-      if (!tasks || tasks.length === 0) return;
-      html += `<div class="td-section-head">${FPS_SECTIONS[secId] || 'Other'}</div><ul class="td-list">`;
-      tasks.forEach(t => {
-        const overdue = t.due && t.due.date < today;
-        const dueLabel = t.due ? (overdue ? `⚠ overdue ${t.due.date}` : t.due.date) : '';
-        html += `<li class="td-item" id="td-${t.id}">
-          <input type="checkbox" onchange="completeTodoist('${t.id}',this)">
-          <div class="td-text">
-            <div>${t.content}</div>
-            ${t.description ? `<div class="td-desc">${t.description}</div>` : ''}
-            ${dueLabel ? `<div class="td-meta${overdue ? ' overdue' : ''}">${dueLabel}</div>` : ''}
-          </div>
-        </li>`;
-      });
-      html += '</ul>';
-    });
-    el.innerHTML = html;
-  }
-
   async function completeTodoist(taskId, checkboxEl) {
     checkboxEl.disabled = true;
     const item = document.getElementById('td-' + taskId);
     if (item) item.classList.add('td-completing');
     try {
-      await fetch('/api/todoist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch(`${API}/api/todoist`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'complete', taskId })
       });
-      // Remove from both local arrays so counts update
       todayTasks_ = Array.isArray(todayTasks_) ? todayTasks_.filter(t => t.id !== taskId) : todayTasks_;
-      fpsTasks_   = Array.isArray(fpsTasks_)   ? fpsTasks_.filter(t => t.id !== taskId)   : fpsTasks_;
       setTimeout(() => { if (item) item.remove(); renderBriefing(); }, 500);
-    } catch(e) {
-      checkboxEl.checked = false;
-      checkboxEl.disabled = false;
+    } catch {
+      checkboxEl.checked = false; checkboxEl.disabled = false;
       if (item) item.classList.remove('td-completing');
     }
   }
 
-  // --- Briefing: computed client-side from whatever's actually in the data right now ---
+  // ── Briefing ─────────────────────────────────────────────────────────────
   function renderBriefing() {
-    const overdue = pipe_.filter(p => p.badge === 'overdue').length;
-    const drafted = pipe_.filter(p => p.badge === 'drafted').length;
+    const overdue    = pipe_.filter(p => p.badge === 'overdue').length;
+    const drafted    = pipe_.filter(p => p.badge === 'drafted').length;
     const notStarted = pipe_.filter(p => p.badge === 'notstarted' || p.badge === 'pending').length;
-    const pendingSends = log_.filter(l => l.sent === 'Drafted').length;
-    const openFocus = Array.isArray(todayTasks_) ? todayTasks_.length : 0;
-    const openHealth = (CL.cc_health_v1 || []).filter(i => !i.done).length;
+    const openHealth  = (CL.cc_health_v1  || []).filter(i => !i.done).length;
     const openFinance = (CL.cc_finance_v1 || []).filter(i => !i.done).length;
+    const openToday   = Array.isArray(todayTasks_) ? todayTasks_.length : 0;
 
     let parts = [];
-    if (pendingSends > 0) {
-      parts.push(`${pendingSends} drafted message${pendingSends>1?'s':''} sitting in Gmail, ready to send — that's the fastest win on this page.`);
-    }
-    if (overdue > 0) {
-      parts.push(`${overdue} school${overdue>1?'s':''} marked Overdue in the pipeline.`);
-    }
-    if (notStarted > 0) {
-      parts.push(`${notStarted} school${notStarted>1?'s':''} still need a contact found.`);
-    }
-    if (openHealth > 0) {
-      parts.push(`${openHealth} open health item${openHealth>1?'s':''}.`);
-    }
-    if (openFinance > 0) {
-      parts.push(`${openFinance} open finance to-do${openFinance>1?'s':''}.`);
-    }
-    if (openFocus > 0) {
-      parts.push(`${openFocus} task${openFocus>1?'s':''} due in Todoist today.`);
-    }
+    if (openToday > 0)   parts.push(`${openToday} task${openToday > 1 ? 's' : ''} due in Todoist today.`);
+    if (overdue > 0)     parts.push(`${overdue} school${overdue > 1 ? 's' : ''} overdue in the pipeline — open FPS Pipeline to action.`);
+    if (drafted > 0)     parts.push(`${drafted} school${drafted > 1 ? 's' : ''} with a drafted outreach ready to send.`);
+    if (notStarted > 0)  parts.push(`${notStarted} school${notStarted > 1 ? 's' : ''} still need a contact found.`);
+    if (openHealth > 0)  parts.push(`${openHealth} open health item${openHealth > 1 ? 's' : ''}.`);
+    if (openFinance > 0) parts.push(`${openFinance} open finance to-do${openFinance > 1 ? 's' : ''}.`);
+
     const text = parts.length
       ? parts.join(' ') + ' Pick one and protect time for it today.'
-      : "Nothing flagged right now — pipeline, log, and to-dos are all caught up.";
+      : 'Nothing flagged — pipeline, tasks, and to-dos are all caught up.';
+
     const box = document.getElementById('summary');
     box.textContent = text;
     box.classList.remove('loading');
   }
 
-  // --- Boot sequence ---
+  // ── Boot ─────────────────────────────────────────────────────────────────
   async function boot() {
-    // Load Redis-backed data and Todoist in parallel
-    const [pipeData, logData, ...clData] = await Promise.all([
-      kvGet('fps_pipeline_v1', SEED_PIPELINE),
-      kvGet('fps_outreach_log_v1', SEED_LOG),
-      ...Object.keys(CHECKLIST_SEEDS).map(key =>
-        kvGet(key, CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false })))
-      ),
-    ]);
+    pipe_ = await kvGet('fps_pipeline_v1', SEED_PIPELINE);
+    renderScorecard();
 
-    pipe_ = pipeData; renderPipe();
-    log_  = logData;  renderLog();
-    Object.keys(CHECKLIST_SEEDS).forEach((key, i) => { CL[key] = clData[i]; renderCL(key); });
+    const clKeys = Object.keys(CHECKLIST_SEEDS);
+    const clData = await Promise.all(
+      clKeys.map(key => kvGet(key, CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false }))))
+    );
+    clKeys.forEach((key, i) => { CL[key] = clData[i]; renderCL(key); });
 
-    // Load Todoist (non-blocking — renders independently)
-    loadTodayTasks();
-    loadFpsTasks();
+    loadTodayTasks(); // async, renders + updates briefing when done
 
     renderBriefing();
     document.getElementById('boot').style.display = 'none';
