@@ -8,7 +8,7 @@
 // Requires one environment variable in Vercel Settings → Environment Variables:
 //   TODOIST_API_TOKEN   (from Todoist Settings → Integrations → Developer)
 
-const TODOIST_BASE = 'https://api.todoist.com/rest/v2';
+const TODOIST_BASE = 'https://api.todoist.com/api/v1';
 const FPS_PROJECT_ID = '6h5862GhJxgJ54hr';
 
 module.exports = async (req, res) => {
@@ -40,7 +40,9 @@ module.exports = async (req, res) => {
         const txt = await r.text();
         return res.status(r.status).json({ error: `Todoist API error: ${txt}` });
       }
-      const tasks = await r.json();
+      const data = await r.json();
+      // v1 API wraps tasks under a "results" key; fall back to array for safety
+      const tasks = Array.isArray(data) ? data : (data.results || []);
       return res.status(200).json({ tasks });
     }
 
