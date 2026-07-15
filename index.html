@@ -7,10 +7,26 @@
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f8fa; color: #1a1a1a; padding: 20px; font-size: 14px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f8fa; color: #1a1a1a; font-size: 14px; }
 
+  /* ── Tab bar ── */
+  .tab-bar { display: flex; align-items: center; gap: 4px; padding: 14px 20px 0; background: #f7f8fa; border-bottom: 2px solid #e8e8e8; position: sticky; top: 0; z-index: 10; }
+  .tab { padding: 8px 18px; font-size: 13px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; border-radius: 6px 6px 0 0; transition: color 0.15s; }
+  .tab:hover { color: #444; }
+  .tab.active { color: #2B5EA7; border-bottom-color: #2B5EA7; }
+  .tab-spacer { flex: 1; }
+  .sync-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #888; padding-bottom: 8px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
+  .sync-dot.ok { background: #22c55e; }
+  .sync-dot.err { background: #ef4444; }
+
+  /* ── Panels ── */
+  .panel { display: none; padding: 20px; }
+  .panel.active { display: block; }
+
+  /* ── Shared layout ── */
   .header { margin-bottom: 20px; }
-  .header h1 { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+  .header h2 { font-size: 18px; font-weight: 700; }
   .header p { color: #666; font-size: 13px; margin-top: 3px; }
 
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -25,32 +41,25 @@
   .card-title-row .card-title { margin-bottom: 0; }
   .card-sub { font-size: 12px; color: #888; margin: -8px 0 12px; line-height: 1.5; }
 
+  /* Briefing */
   .summary-box { background: #f0f6ff; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #1e3a5f; line-height: 1.6; min-height: 60px; }
   .summary-box.loading { color: #888; font-style: italic; }
 
-  .sync-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
-  .sync-dot.ok { background: #22c55e; }
-  .sync-dot.err { background: #ef4444; }
-
-  .timestamp { font-size: 11px; color: #bbb; text-align: right; margin-top: 16px; }
-
-  /* Revenue / scorecard */
+  /* Revenue */
   .revenue-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
-  .revenue-current { font-size: 28px; font-weight: 800; color: #1a1a1a; }
+  .revenue-current { font-size: 28px; font-weight: 800; }
   .revenue-target { font-size: 13px; color: #888; }
   .progress-bar { background: #eee; border-radius: 99px; height: 8px; overflow: hidden; }
   .progress-fill { background: linear-gradient(90deg, #2B5EA7, #4a90d9); height: 100%; border-radius: 99px; }
   .progress-label { font-size: 11px; color: #888; margin-top: 5px; }
 
-  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  /* Score tiles */
+  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .score-item { text-align: center; padding: 10px 6px; background: #f8fafc; border-radius: 8px; }
-  .score-num { font-size: 22px; font-weight: 800; color: #1a1a1a; }
+  .score-num { font-size: 22px; font-weight: 800; }
   .score-num.warn { color: #dc2626; }
   .score-num.good { color: #16a34a; }
   .score-label { font-size: 10px; color: #999; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
-
-  .pipeline-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; font-weight: 600; color: #2B5EA7; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 7px; padding: 7px 12px; text-decoration: none; cursor: default; }
 
   /* Checklists */
   .check-list { list-style: none; }
@@ -63,148 +72,273 @@
   .add-log-btn { font-size: 11px; font-weight: 700; border: none; border-radius: 7px; padding: 6px 12px; background: #1a1a1a; color: #fff; cursor: pointer; flex-shrink: 0; }
   .del-btn { font-size: 12px; border: none; background: none; color: #c00; cursor: pointer; }
 
-  /* Todoist task list */
+  /* Pipeline table */
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; padding: 0 8px 8px; }
+  td { padding: 9px 8px; vertical-align: top; border-top: 1px solid #f3f3f3; font-size: 13px; }
+  tr:hover td { background: #fafbff; }
+
+  .pipe-select { font-size: 11px; border: 1px solid #ddd; border-radius: 6px; padding: 3px 6px; font-family: inherit; background: #fff; cursor: pointer; }
+  .det-input { width: 100%; font-size: 12px; border: 1px solid #ddd; border-radius: 6px; padding: 4px 8px; font-family: inherit; color: #444; }
+  .det-input:focus { outline: none; border-color: #2B5EA7; }
+
+  .pipe-form { display: flex; gap: 8px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+  .pipe-form input { flex: 1; min-width: 180px; font-size: 13px; padding: 7px 10px; border: 1px solid #ddd; border-radius: 7px; font-family: inherit; }
+  .btn-blue { font-size: 12px; font-weight: 700; border: none; border-radius: 7px; padding: 7px 14px; background: #2B5EA7; color: #fff; cursor: pointer; flex-shrink: 0; }
+  .btn-red  { font-size: 12px; border: none; background: none; color: #c00; cursor: pointer; padding: 2px 4px; }
+
+  /* Outreach log */
+  .log-list { list-style: none; }
+  .log-item { padding: 10px 0; border-bottom: 1px solid #f3f3f3; }
+  .log-item:last-child { border-bottom: none; }
+  .log-school { font-size: 12px; font-weight: 700; color: #2B5EA7; }
+  .log-note { font-size: 13px; margin-top: 3px; line-height: 1.5; }
+  .log-date { font-size: 11px; color: #bbb; margin-top: 3px; }
+  .log-del { float: right; font-size: 11px; border: none; background: none; color: #c00; cursor: pointer; }
+  .log-form { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .log-form select, .log-form input { font-size: 12px; padding: 6px 9px; border: 1px solid #ddd; border-radius: 7px; font-family: inherit; }
+  .log-form input { flex: 1; min-width: 180px; }
+
+  /* Todoist */
   .td-list { list-style: none; }
   .td-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f3f3; }
   .td-item:last-child { border-bottom: none; }
   .td-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; accent-color: #2B5EA7; cursor: pointer; }
   .td-text { flex: 1; font-size: 13px; line-height: 1.4; }
-  .td-desc { font-size: 11px; color: #999; margin-top: 2px; line-height: 1.4; }
+  .td-desc { font-size: 11px; color: #999; margin-top: 2px; }
   .td-meta { font-size: 11px; color: #999; margin-top: 2px; }
+  .td-meta.section { color: #2B5EA7; font-weight: 700; font-size: 12px; }
   .td-meta.overdue { color: #dc2626; font-weight: 600; }
   .td-empty { font-size: 13px; color: #aaa; font-style: italic; padding: 8px 0; }
   .td-error { font-size: 12px; color: #dc2626; padding: 8px 0; }
   .td-completing { opacity: 0.35; transition: opacity 0.4s; }
 
+  .pipeline-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; font-weight: 600; color: #2B5EA7; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 7px; padding: 7px 12px; cursor: pointer; border: none; }
+
   #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
+
+  .timestamp { font-size: 11px; color: #bbb; text-align: right; margin-top: 16px; }
 </style>
 </head>
 <body>
 
 <div id="boot">Loading your command center…</div>
 
-<div class="header">
-  <h1>Command Center</h1>
-  <p>Lawrence Riddick — your life, all in one place. <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">connecting…</span></span></p>
+<!-- ── Tab bar ── -->
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab('life')">🏠 Life</button>
+  <button class="tab" onclick="showTab('fps')">📋 FPS Pipeline</button>
+  <div class="tab-spacer"></div>
+  <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">connecting…</span></span>
 </div>
 
-<div class="grid">
+<!-- ══════════════════════════════════════════════
+     PANEL 1 — LIFE DASHBOARD
+══════════════════════════════════════════════ -->
+<div class="panel active" id="panel-life">
+  <div class="header">
+    <h2>Command Center</h2>
+    <p>Lawrence Riddick — your life, all in one place.</p>
+  </div>
 
-  <!-- Today's Focus: live from Todoist -->
-  <div class="card full">
-    <div class="card-title-row">
-      <div class="card-title">Today's Focus — Todoist</div>
-      <span id="tdTodayStatus" style="font-size:11px;color:#aaa"></span>
+  <div class="grid">
+
+    <!-- Today's Focus -->
+    <div class="card full">
+      <div class="card-title-row">
+        <div class="card-title">Today's Focus — Todoist</div>
+        <span id="tdTodayStatus" style="font-size:11px;color:#aaa"></span>
+      </div>
+      <ul class="td-list" id="todayList">
+        <li class="td-item"><span class="td-text td-empty">Loading from Todoist…</span></li>
+      </ul>
     </div>
-    <ul class="td-list" id="todayList">
-      <li class="td-item"><span class="td-text td-empty">Loading from Todoist…</span></li>
-    </ul>
-  </div>
 
-  <!-- Briefing -->
-  <div class="card full">
-    <div class="card-title">Briefing</div>
-    <div class="summary-box loading" id="summary">Loading your briefing...</div>
-  </div>
-
-  <!-- ── Fingerprint Supply ── -->
-  <div class="section-label first">Fingerprint Supply</div>
-
-  <!-- Revenue Goal -->
-  <div class="card">
-    <div class="card-title">Revenue Goal</div>
-    <div class="revenue-row">
-      <div class="revenue-current" id="revenueAmt">$500</div>
-      <div class="revenue-target">/ mo &nbsp;→&nbsp; goal: $10,000</div>
+    <!-- Briefing -->
+    <div class="card full">
+      <div class="card-title">Briefing</div>
+      <div class="summary-box loading" id="summary">Loading your briefing...</div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="revBar" style="width:5%"></div></div>
-    <div class="progress-label" id="revLabel">5% of target — $9,500/mo gap to close</div>
-  </div>
 
-  <!-- Pipeline Scorecard -->
-  <div class="card">
-    <div class="card-title">Schools Pipeline</div>
-    <div class="score-grid">
-      <div class="score-item"><div class="score-num" id="sc-total">—</div><div class="score-label">Total</div></div>
-      <div class="score-item"><div class="score-num good" id="sc-responded">—</div><div class="score-label">Responded</div></div>
-      <div class="score-item"><div class="score-num" id="sc-drafted">—</div><div class="score-label">Drafted</div></div>
-      <div class="score-item"><div class="score-num warn" id="sc-overdue">—</div><div class="score-label">Overdue</div></div>
+    <!-- FPS section -->
+    <div class="section-label first">Fingerprint Supply</div>
+
+    <div class="card">
+      <div class="card-title">Revenue Goal</div>
+      <div class="revenue-row">
+        <div class="revenue-current">$500</div>
+        <div class="revenue-target">/ mo &nbsp;→&nbsp; goal: $10,000</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:5%"></div></div>
+      <div class="progress-label">5% of target — $9,500/mo gap to close</div>
     </div>
-    <div class="pipeline-link">📋 Open FPS Pipeline in Cowork sidebar for details</div>
-  </div>
 
-  <!-- ── The Book ── -->
-  <div class="section-label">The Book — "What Stares Back"</div>
-
-  <div class="card full">
-    <div class="card-title">Project Status</div>
-    <div class="card-sub">Phase 1 — Capture &amp; Foundation (Months 1–3). Goal: preserve raw material while inside the experience, build the chapter framework. Last session: Discovery (May 2026) — full concept developed. Next step: first capture session.</div>
-  </div>
-
-  <div class="card full" data-checklist="cc_book_scenes_v1">
-    <div class="card-title-row"><div class="card-title">Core Scenes to Capture</div></div>
-    <ul class="check-list" id="list-cc_book_scenes_v1"></ul>
-    <div class="add-row">
-      <input class="ci-input" placeholder="Add a scene or moment...">
-      <button class="add-log-btn" onclick="addCL('cc_book_scenes_v1', this.previousElementSibling)">Add</button>
+    <div class="card">
+      <div class="card-title">Schools Pipeline</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-num" id="sc-total">—</div><div class="score-label">Total</div></div>
+        <div class="score-item"><div class="score-num good" id="sc-responded">—</div><div class="score-label">Responded</div></div>
+        <div class="score-item"><div class="score-num" id="sc-drafted">—</div><div class="score-label">Drafted</div></div>
+        <div class="score-item"><div class="score-num warn" id="sc-overdue">—</div><div class="score-label">Overdue</div></div>
+      </div>
+      <button class="pipeline-link" onclick="showTab('fps')">📋 Open FPS Pipeline →</button>
     </div>
-  </div>
 
-  <!-- ── Health ── -->
-  <div class="section-label">Health &amp; Medical</div>
-
-  <div class="card full" data-checklist="cc_health_v1">
-    <div class="card-title-row"><div class="card-title">Health — editable</div></div>
-    <ul class="check-list" id="list-cc_health_v1"></ul>
-    <div class="add-row">
-      <input class="ci-input" placeholder="Add an appointment or to-do...">
-      <button class="add-log-btn" onclick="addCL('cc_health_v1', this.previousElementSibling)">Add</button>
+    <!-- Book -->
+    <div class="section-label">The Book — "What Stares Back"</div>
+    <div class="card full">
+      <div class="card-title">Project Status</div>
+      <div class="card-sub">Phase 1 — Capture &amp; Foundation (Months 1–3). Goal: preserve raw material while inside the experience, build the chapter framework. Last session: Discovery (May 2026) — full concept developed. Next step: first capture session.</div>
     </div>
-  </div>
-
-  <!-- ── Finance ── -->
-  <div class="section-label">Personal Finance</div>
-
-  <div class="card full" data-checklist="cc_finance_v1">
-    <div class="card-title-row"><div class="card-title">Finance — editable</div></div>
-    <ul class="check-list" id="list-cc_finance_v1"></ul>
-    <div class="add-row">
-      <input class="ci-input" placeholder="Add a finance to-do...">
-      <button class="add-log-btn" onclick="addCL('cc_finance_v1', this.previousElementSibling)">Add</button>
+    <div class="card full">
+      <div class="card-title-row"><div class="card-title">Core Scenes to Capture</div></div>
+      <ul class="check-list" id="list-cc_book_scenes_v1"></ul>
+      <div class="add-row">
+        <input class="ci-input" placeholder="Add a scene or moment...">
+        <button class="add-log-btn" onclick="addCL('cc_book_scenes_v1', this.previousElementSibling)">Add</button>
+      </div>
     </div>
-  </div>
 
-  <!-- ── Household ── -->
-  <div class="section-label">Household &amp; Family</div>
-
-  <div class="card full" data-checklist="cc_household_v1">
-    <div class="card-title-row"><div class="card-title">Household &amp; Family — editable</div></div>
-    <ul class="check-list" id="list-cc_household_v1"></ul>
-    <div class="add-row">
-      <input class="ci-input" placeholder="Add a household or family to-do...">
-      <button class="add-log-btn" onclick="addCL('cc_household_v1', this.previousElementSibling)">Add</button>
+    <!-- Health -->
+    <div class="section-label">Health &amp; Medical</div>
+    <div class="card full">
+      <div class="card-title-row"><div class="card-title">Health — editable</div></div>
+      <ul class="check-list" id="list-cc_health_v1"></ul>
+      <div class="add-row">
+        <input class="ci-input" placeholder="Add an appointment or to-do...">
+        <button class="add-log-btn" onclick="addCL('cc_health_v1', this.previousElementSibling)">Add</button>
+      </div>
     </div>
-  </div>
 
+    <!-- Finance -->
+    <div class="section-label">Personal Finance</div>
+    <div class="card full">
+      <div class="card-title-row"><div class="card-title">Finance — editable</div></div>
+      <ul class="check-list" id="list-cc_finance_v1"></ul>
+      <div class="add-row">
+        <input class="ci-input" placeholder="Add a finance to-do...">
+        <button class="add-log-btn" onclick="addCL('cc_finance_v1', this.previousElementSibling)">Add</button>
+      </div>
+    </div>
+
+    <!-- Household -->
+    <div class="section-label">Household &amp; Family</div>
+    <div class="card full">
+      <div class="card-title-row"><div class="card-title">Household &amp; Family — editable</div></div>
+      <ul class="check-list" id="list-cc_household_v1"></ul>
+      <div class="add-row">
+        <input class="ci-input" placeholder="Add a household or family to-do...">
+        <button class="add-log-btn" onclick="addCL('cc_household_v1', this.previousElementSibling)">Add</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="timestamp" id="ts-life"></div>
 </div>
 
-<div class="timestamp" id="timestamp"></div>
+<!-- ══════════════════════════════════════════════
+     PANEL 2 — FPS PIPELINE
+══════════════════════════════════════════════ -->
+<div class="panel" id="panel-fps">
+  <div class="header">
+    <h2>FPS Pipeline</h2>
+    <p>Fingerprint Supply — schools vertical drill-down.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="section-label first">At a Glance</div>
+
+    <div class="card">
+      <div class="card-title">Revenue Goal</div>
+      <div class="revenue-row">
+        <div class="revenue-current">$500</div>
+        <div class="revenue-target">/ mo &nbsp;→&nbsp; goal: $10,000</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:5%"></div></div>
+      <div class="progress-label">5% of target — $9,500/mo gap</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pipeline Stats</div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-num" id="fps-sc-total">—</div><div class="score-label">Total</div></div>
+        <div class="score-item"><div class="score-num good" id="fps-sc-responded">—</div><div class="score-label">Responded</div></div>
+        <div class="score-item"><div class="score-num" id="fps-sc-drafted">—</div><div class="score-label">Drafted</div></div>
+        <div class="score-item"><div class="score-num warn" id="fps-sc-overdue">—</div><div class="score-label">Overdue</div></div>
+      </div>
+    </div>
+
+    <!-- Pipeline table -->
+    <div class="section-label">Schools Pipeline</div>
+    <div class="card full">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:36%">School</th>
+            <th style="width:14%">Status</th>
+            <th>Contact / Notes</th>
+            <th style="width:4%"></th>
+          </tr>
+        </thead>
+        <tbody id="pipeBody"></tbody>
+      </table>
+      <div class="pipe-form">
+        <input id="pipeSchool" placeholder="School name…">
+        <button class="btn-blue" onclick="addPipe()">+ Add School</button>
+      </div>
+    </div>
+
+    <!-- Outreach log -->
+    <div class="section-label">Outreach Log</div>
+    <div class="card full">
+      <div class="card-title">Touch History</div>
+      <ul class="log-list" id="logBody"></ul>
+      <div class="log-form">
+        <select id="logSchool" style="min-width:160px"></select>
+        <input id="logNote" placeholder="What happened — touch 1 sent, replied, call booked…">
+        <button class="btn-blue" onclick="addLog()">Log</button>
+      </div>
+    </div>
+
+    <!-- Todoist FPS tasks -->
+    <div class="section-label">Todoist — FPS Pipeline Tasks</div>
+    <div class="card full">
+      <div class="card-title-row">
+        <div class="card-title">Open Tasks by Section</div>
+        <span id="tdFpsStatus" style="font-size:11px;color:#aaa"></span>
+      </div>
+      <ul class="td-list" id="fpsList">
+        <li class="td-item"><span class="td-text td-empty">Loading from Todoist…</span></li>
+      </ul>
+    </div>
+
+  </div>
+  <div class="timestamp" id="ts-fps"></div>
+</div>
 
 <script>
-  const now = new Date();
-  document.getElementById('timestamp').textContent =
-    'Last viewed: ' + now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) +
-    ' at ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  // ── Tab switching ────────────────────────────────────────────────────────
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab[onclick="showTab('${name}')"]`).classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  // ── Timestamp ────────────────────────────────────────────────────────────
+  const tsStr = 'Last viewed: ' + new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }) +
+    ' at ' + new Date().toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+  document.getElementById('ts-life').textContent = tsStr;
+  document.getElementById('ts-fps').textContent  = tsStr;
 
   const API = 'https://command-center-one-snowy.vercel.app';
 
-  // ── Sync status ────────────────────────────────────────────────────────────
-  function setSyncStatus(state) {
-    const dot = document.getElementById('syncDot');
-    const txt = document.getElementById('syncText');
-    if (!dot) return;
-    dot.className = 'sync-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
-    txt.textContent = state === 'ok' ? 'synced' : state === 'err' ? 'offline' : 'connecting…';
+  // ── Sync status ──────────────────────────────────────────────────────────
+  function setSyncStatus(s) {
+    const d = document.getElementById('syncDot'), t = document.getElementById('syncText');
+    d.className = 'sync-dot' + (s==='ok' ? ' ok' : s==='err' ? ' err' : '');
+    t.textContent = s==='ok' ? 'synced' : s==='err' ? 'offline' : 'connecting…';
   }
 
   // ── KV helpers ────────────────────────────────────────────────────────────
@@ -228,36 +362,112 @@
     } catch { setSyncStatus('err'); }
   }
 
-  // ── Pipeline scorecard ───────────────────────────────────────────────────
+  // ── Pipeline ─────────────────────────────────────────────────────────────
   const SEED_PIPELINE = [
-    {name:"Holy Spirit Catholic School", badge:"notstarted", detail:""},
-    {name:"St. Matthew's Catholic School", badge:"notstarted", detail:""},
-    {name:"Holy Family Catholic School", badge:"pending", detail:""},
-    {name:"Jacksonville Country Day School", badge:"drafted", detail:"Contact: Nathan Renstrom, nrenstrom@jcds.com. Touch 1 drafted 7/14."},
-    {name:"Riverside Presbyterian Day School", badge:"notstarted", detail:""},
-    {name:"Christ the King Catholic School", badge:"notstarted", detail:""},
-    {name:"Guardian Catholic School", badge:"notstarted", detail:""},
-    {name:"Grace Lutheran School", badge:"notstarted", detail:""},
-    {name:"San Jose Episcopal Day School", badge:"notstarted", detail:""},
-    {name:"Sacred Heart School", badge:"notstarted", detail:""},
-    {name:"West Meadows Christian Academy", badge:"notstarted", detail:""},
-    {name:"Impact Christian Academy", badge:"waiting", detail:"Re-engage in 3–6 months, PTA-level entry only."},
-    {name:"Harbour Pointe Prep", badge:"locked", detail:"Active Inksoft spirit store. Do not pursue."}
+    {name:"Holy Spirit Catholic School",        badge:"notstarted", detail:""},
+    {name:"St. Matthew's Catholic School",      badge:"notstarted", detail:""},
+    {name:"Holy Family Catholic School",        badge:"pending",    detail:""},
+    {name:"Jacksonville Country Day School",    badge:"drafted",    detail:"Contact: Nathan Renstrom (Dir. Auxiliary Services) — nrenstrom@jcds.com. Touch 1 drafted 7/14/26."},
+    {name:"Riverside Presbyterian Day School",  badge:"notstarted", detail:""},
+    {name:"Christ the King Catholic School",    badge:"notstarted", detail:""},
+    {name:"Guardian Catholic School",           badge:"notstarted", detail:""},
+    {name:"Grace Lutheran School",              badge:"notstarted", detail:""},
+    {name:"San Jose Episcopal Day School",      badge:"notstarted", detail:""},
+    {name:"Sacred Heart School",                badge:"notstarted", detail:""},
+    {name:"West Meadows Christian Academy",     badge:"notstarted", detail:""},
+    {name:"Impact Christian Academy",           badge:"waiting",    detail:"Previous customer. Re-engage in 3–6 months. PTA entry only."},
+    {name:"Harbour Pointe Prep",                badge:"locked",     detail:"Active Inksoft spirit store. Do not pursue."}
+  ];
+
+  const BADGE_OPTS = [
+    ['notstarted','Not Started'],['pending','Pending'],['drafted','Drafted'],
+    ['waiting','Waiting'],['responded','Responded'],['overdue','Overdue'],['locked','Locked']
   ];
 
   let pipe_ = [];
+
+  function renderPipe() {
+    const tbody = document.getElementById('pipeBody');
+    if (!tbody) return;
+    tbody.innerHTML = pipe_.map((p,i) => `
+      <tr>
+        <td style="font-weight:600">${p.name}</td>
+        <td><select class="pipe-select" onchange="updateBadge(${i},this.value)">
+          ${BADGE_OPTS.map(([v,l]) => `<option value="${v}" ${p.badge===v?'selected':''}>${l}</option>`).join('')}
+        </select></td>
+        <td><input class="det-input" value="${(p.detail||'').replace(/"/g,'&quot;')}" placeholder="Contact name, email, notes…" onblur="updateDetail(${i},this.value)"></td>
+        <td><button class="btn-red" onclick="removePipe(${i})">✕</button></td>
+      </tr>`).join('');
+    renderScorecard();
+    populateLogSchoolSelect();
+  }
+
   function renderScorecard() {
     const total     = pipe_.length;
-    const responded = pipe_.filter(p => p.badge === 'responded').length;
-    const drafted   = pipe_.filter(p => p.badge === 'drafted').length;
-    const overdue   = pipe_.filter(p => p.badge === 'overdue').length;
+    const responded = pipe_.filter(p=>p.badge==='responded').length;
+    const drafted   = pipe_.filter(p=>p.badge==='drafted').length;
+    const overdue   = pipe_.filter(p=>p.badge==='overdue').length;
+    // Life tab
     document.getElementById('sc-total').textContent     = total;
     document.getElementById('sc-responded').textContent = responded;
     document.getElementById('sc-drafted').textContent   = drafted;
     document.getElementById('sc-overdue').textContent   = overdue;
+    // FPS tab
+    document.getElementById('fps-sc-total').textContent     = total;
+    document.getElementById('fps-sc-responded').textContent = responded;
+    document.getElementById('fps-sc-drafted').textContent   = drafted;
+    document.getElementById('fps-sc-overdue').textContent   = overdue;
   }
 
-  // ── Checklists ───────────────────────────────────────────────────────────
+  function updateBadge(i,v)  { pipe_[i].badge=v;  kvSet('fps_pipeline_v1',pipe_); renderPipe(); }
+  function updateDetail(i,v) { pipe_[i].detail=v; kvSet('fps_pipeline_v1',pipe_); }
+  function removePipe(i)     { if(confirm('Remove '+pipe_[i].name+'?')) { pipe_.splice(i,1); kvSet('fps_pipeline_v1',pipe_); renderPipe(); } }
+  function addPipe() {
+    const inp = document.getElementById('pipeSchool');
+    const v = inp.value.trim(); if(!v) return;
+    pipe_.push({name:v, badge:'notstarted', detail:''});
+    kvSet('fps_pipeline_v1',pipe_); inp.value=''; renderPipe();
+  }
+
+  // ── Outreach Log ─────────────────────────────────────────────────────────
+  let log_ = [];
+
+  function populateLogSchoolSelect() {
+    const sel = document.getElementById('logSchool');
+    if (!sel) return;
+    const curr = sel.value;
+    sel.innerHTML = pipe_.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+    if (curr) sel.value = curr;
+  }
+
+  function renderLog() {
+    const el = document.getElementById('logBody');
+    if (!el) return;
+    if (log_.length === 0) {
+      el.innerHTML = '<li class="log-item"><span style="font-size:13px;color:#aaa;font-style:italic">No outreach logged yet.</span></li>';
+      return;
+    }
+    el.innerHTML = [...log_].reverse().map((e,ri) => {
+      const i = log_.length - 1 - ri;
+      return `<li class="log-item">
+        <button class="log-del" onclick="removeLog(${i})">✕</button>
+        <div class="log-school">${e.school}</div>
+        <div class="log-note">${e.note}</div>
+        <div class="log-date">${e.date}</div>
+      </li>`;
+    }).join('');
+  }
+
+  function addLog() {
+    const sel = document.getElementById('logSchool');
+    const inp = document.getElementById('logNote');
+    const v = inp.value.trim(); if(!v) return;
+    log_.push({ school: sel.value, note: v, date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) });
+    kvSet('fps_outreach_log_v1', log_); inp.value=''; renderLog();
+  }
+  function removeLog(i) { log_.splice(i,1); kvSet('fps_outreach_log_v1',log_); renderLog(); }
+
+  // ── Checklists ────────────────────────────────────────────────────────────
   const CHECKLIST_SEEDS = {
     cc_book_scenes_v1: [
       "Receiving the breast cancer diagnosis (2021)",
@@ -271,38 +481,38 @@
       "What he wants his daughter to know that she doesn't yet",
       "His coming-of-age story — key scenes TBD"
     ],
-    cc_health_v1: [
-      "Book the oncologist appointment — still not on the calendar"
-    ],
-    cc_finance_v1: [
-      "2024 taxes — confirm filed or not",
-      "2025 bookkeeping — still open, needs a pass"
-    ],
-    cc_household_v1: [
-      "Family reunion planning (ties to the Better Reunion Tees proof-of-concept)"
-    ]
+    cc_health_v1: ["Book the oncologist appointment — still not on the calendar"],
+    cc_finance_v1: ["2024 taxes — confirm filed or not","2025 bookkeeping — still open, needs a pass"],
+    cc_household_v1: ["Family reunion planning (ties to the Better Reunion Tees proof-of-concept)"]
   };
   let CL = {};
+
   function renderCL(key) {
     const el = document.getElementById('list-' + key);
     if (!el) return;
     el.innerHTML = CL[key].map((item, i) => `
       <li class="check-item">
-        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleCL('${key}',${i})">
-        <span class="ci-text" style="${item.done ? 'text-decoration:line-through;color:#aaa' : ''}">${item.text}</span>
+        <input type="checkbox" ${item.done?'checked':''} onchange="toggleCL('${key}',${i})">
+        <span class="ci-text" style="${item.done?'text-decoration:line-through;color:#aaa':''}">${item.text}</span>
         <button class="del-btn" onclick="removeCL('${key}',${i})">✕</button>
       </li>`).join('');
   }
-  function toggleCL(key, i) { CL[key][i].done = !CL[key][i].done; kvSet(key, CL[key]); renderCL(key); }
-  function removeCL(key, i) { CL[key].splice(i, 1); kvSet(key, CL[key]); renderCL(key); }
+  function toggleCL(key,i) { CL[key][i].done=!CL[key][i].done; kvSet(key,CL[key]); renderCL(key); }
+  function removeCL(key,i) { CL[key].splice(i,1); kvSet(key,CL[key]); renderCL(key); }
   function addCL(key, inputEl) {
-    const v = inputEl.value.trim(); if (!v) return;
-    CL[key].push({ text: v, done: false });
-    kvSet(key, CL[key]); inputEl.value = ''; renderCL(key);
+    const v = inputEl.value.trim(); if(!v) return;
+    CL[key].push({text:v, done:false});
+    kvSet(key,CL[key]); inputEl.value=''; renderCL(key);
   }
 
-  // ── Todoist ──────────────────────────────────────────────────────────────
-  let todayTasks_ = [];
+  // ── Todoist ───────────────────────────────────────────────────────────────
+  const FPS_SECTIONS = {
+    '6h58635wHMmXPPcr': 'Send Now',
+    '6h58637frmG2g2PJ': 'Awaiting Reply',
+    '6h58636j5Gc3JRrr': 'Weekly Block',
+    '6h58636C4hjc52XJ': 'Closed / Cold'
+  };
+  let todayTasks_ = [], fpsTasks_ = [];
 
   async function loadTodayTasks() {
     const pill = document.getElementById('tdTodayStatus');
@@ -311,7 +521,7 @@
       if (!r.ok) throw new Error();
       const j = await r.json();
       todayTasks_ = j.tasks || [];
-      if (pill) pill.textContent = `${todayTasks_.length} task${todayTasks_.length !== 1 ? 's' : ''}`;
+      if (pill) pill.textContent = `${todayTasks_.length} task${todayTasks_.length!==1?'s':''}`;
     } catch {
       todayTasks_ = null;
       if (pill) pill.textContent = 'offline';
@@ -331,7 +541,7 @@
       el.innerHTML = '<li class="td-item"><span class="td-empty">Nothing due today — you\'re clear.</span></li>';
       return;
     }
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0,10);
     el.innerHTML = todayTasks_.map(t => {
       const overdue = t.due && t.due.date < today;
       const dueLabel = t.due ? (overdue ? `⚠ overdue since ${t.due.date}` : 'due today') : '';
@@ -339,15 +549,15 @@
         <input type="checkbox" onchange="completeTodoist('${t.id}',this)">
         <div class="td-text">
           <div>${t.content}</div>
-          ${t.description ? `<div class="td-desc">${t.description}</div>` : ''}
-          ${dueLabel ? `<div class="td-meta${overdue ? ' overdue' : ''}">${dueLabel}</div>` : ''}
+          ${t.description?`<div class="td-desc">${t.description}</div>`:''}
+          ${dueLabel?`<div class="td-meta${overdue?' overdue':''}">${dueLabel}</div>`:''}
         </div>
       </li>`;
     }).join('');
   }
 
-  async function completeTodoist(taskId, checkboxEl) {
-    checkboxEl.disabled = true;
+  async function completeTodoist(taskId, cb) {
+    cb.disabled = true;
     const item = document.getElementById('td-' + taskId);
     if (item) item.classList.add('td-completing');
     try {
@@ -355,30 +565,99 @@
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'complete', taskId })
       });
-      todayTasks_ = Array.isArray(todayTasks_) ? todayTasks_.filter(t => t.id !== taskId) : todayTasks_;
-      setTimeout(() => { if (item) item.remove(); renderBriefing(); }, 500);
+      todayTasks_ = Array.isArray(todayTasks_) ? todayTasks_.filter(t=>t.id!==taskId) : todayTasks_;
+      setTimeout(() => { if(item) item.remove(); renderBriefing(); }, 500);
     } catch {
-      checkboxEl.checked = false; checkboxEl.disabled = false;
+      cb.checked = false; cb.disabled = false;
+      if (item) item.classList.remove('td-completing');
+    }
+  }
+
+  async function loadFpsTasks() {
+    const pill = document.getElementById('tdFpsStatus');
+    try {
+      const r = await fetch(`${API}/api/todoist?type=fps`);
+      if (!r.ok) throw new Error();
+      const j = await r.json();
+      fpsTasks_ = j.tasks || [];
+      if (pill) pill.textContent = `${fpsTasks_.length} open`;
+    } catch {
+      fpsTasks_ = null;
+      if (pill) pill.textContent = 'offline';
+    }
+    renderFpsTasks();
+  }
+
+  function renderFpsTasks() {
+    const el = document.getElementById('fpsList');
+    if (!el) return;
+    if (fpsTasks_ === null) {
+      el.innerHTML = '<li class="td-item"><span class="td-error">Could not load Todoist.</span></li>';
+      return;
+    }
+    if (fpsTasks_.length === 0) {
+      el.innerHTML = '<li class="td-item"><span class="td-empty">No open FPS tasks in Todoist.</span></li>';
+      return;
+    }
+    const grouped = {};
+    fpsTasks_.forEach(t => {
+      const sec = FPS_SECTIONS[t.section_id] || 'Unsectioned';
+      if (!grouped[sec]) grouped[sec] = [];
+      grouped[sec].push(t);
+    });
+    const order = ['Send Now','Awaiting Reply','Weekly Block','Closed / Cold','Unsectioned'];
+    let html = '';
+    order.forEach(sec => {
+      if (!grouped[sec]) return;
+      html += `<li class="td-item" style="padding:6px 0 2px"><span class="td-meta section">▸ ${sec}</span></li>`;
+      grouped[sec].forEach(t => {
+        const today = new Date().toISOString().slice(0,10);
+        const overdue = t.due && t.due.date < today;
+        html += `<li class="td-item" id="fps-${t.id}">
+          <input type="checkbox" onchange="completeFpsTask('${t.id}',this)">
+          <div class="td-text">
+            <div>${t.content}</div>
+            ${t.due?`<div class="td-meta${overdue?' overdue':''}">${overdue?'⚠ overdue: ':'due: '}${t.due.date}</div>`:''}
+          </div>
+        </li>`;
+      });
+    });
+    el.innerHTML = html;
+  }
+
+  async function completeFpsTask(taskId, cb) {
+    cb.disabled = true;
+    const item = document.getElementById('fps-' + taskId);
+    if (item) item.classList.add('td-completing');
+    try {
+      await fetch(`${API}/api/todoist`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'complete', taskId })
+      });
+      fpsTasks_ = Array.isArray(fpsTasks_) ? fpsTasks_.filter(t=>t.id!==taskId) : fpsTasks_;
+      setTimeout(() => { if(item) item.remove(); }, 500);
+    } catch {
+      cb.checked = false; cb.disabled = false;
       if (item) item.classList.remove('td-completing');
     }
   }
 
   // ── Briefing ─────────────────────────────────────────────────────────────
   function renderBriefing() {
-    const overdue    = pipe_.filter(p => p.badge === 'overdue').length;
-    const drafted    = pipe_.filter(p => p.badge === 'drafted').length;
-    const notStarted = pipe_.filter(p => p.badge === 'notstarted' || p.badge === 'pending').length;
-    const openHealth  = (CL.cc_health_v1  || []).filter(i => !i.done).length;
-    const openFinance = (CL.cc_finance_v1 || []).filter(i => !i.done).length;
+    const overdue    = pipe_.filter(p=>p.badge==='overdue').length;
+    const drafted    = pipe_.filter(p=>p.badge==='drafted').length;
+    const notStarted = pipe_.filter(p=>p.badge==='notstarted'||p.badge==='pending').length;
+    const openHealth  = (CL.cc_health_v1 ||[]).filter(i=>!i.done).length;
+    const openFinance = (CL.cc_finance_v1||[]).filter(i=>!i.done).length;
     const openToday   = Array.isArray(todayTasks_) ? todayTasks_.length : 0;
 
     let parts = [];
-    if (openToday > 0)   parts.push(`${openToday} task${openToday > 1 ? 's' : ''} due in Todoist today.`);
-    if (overdue > 0)     parts.push(`${overdue} school${overdue > 1 ? 's' : ''} overdue in the pipeline — open FPS Pipeline to action.`);
-    if (drafted > 0)     parts.push(`${drafted} school${drafted > 1 ? 's' : ''} with a drafted outreach ready to send.`);
-    if (notStarted > 0)  parts.push(`${notStarted} school${notStarted > 1 ? 's' : ''} still need a contact found.`);
-    if (openHealth > 0)  parts.push(`${openHealth} open health item${openHealth > 1 ? 's' : ''}.`);
-    if (openFinance > 0) parts.push(`${openFinance} open finance to-do${openFinance > 1 ? 's' : ''}.`);
+    if (openToday>0)   parts.push(`${openToday} task${openToday>1?'s':''} due in Todoist today.`);
+    if (overdue>0)     parts.push(`${overdue} school${overdue>1?'s':''} overdue in the pipeline.`);
+    if (drafted>0)     parts.push(`${drafted} school${drafted>1?'s':''} with a drafted outreach ready to send.`);
+    if (notStarted>0)  parts.push(`${notStarted} school${notStarted>1?'s':''} still need a first contact.`);
+    if (openHealth>0)  parts.push(`${openHealth} open health item${openHealth>1?'s':''}.`);
+    if (openFinance>0) parts.push(`${openFinance} open finance to-do${openFinance>1?'s':''}.`);
 
     const text = parts.length
       ? parts.join(' ') + ' Pick one and protect time for it today.'
@@ -389,20 +668,26 @@
     box.classList.remove('loading');
   }
 
-  // ── Boot ─────────────────────────────────────────────────────────────────
+  // ── Boot ──────────────────────────────────────────────────────────────────
   async function boot() {
-    pipe_ = await kvGet('fps_pipeline_v1', SEED_PIPELINE);
-    renderScorecard();
-
     const clKeys = Object.keys(CHECKLIST_SEEDS);
-    const clData = await Promise.all(
-      clKeys.map(key => kvGet(key, CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false }))))
-    );
-    clKeys.forEach((key, i) => { CL[key] = clData[i]; renderCL(key); });
+    const [pipeData, logData, ...clData] = await Promise.all([
+      kvGet('fps_pipeline_v1', SEED_PIPELINE),
+      kvGet('fps_outreach_log_v1', []),
+      ...clKeys.map(key => kvGet(key, CHECKLIST_SEEDS[key].map(t => ({text:t, done:false}))))
+    ]);
 
-    loadTodayTasks(); // async, renders + updates briefing when done
+    pipe_ = pipeData;
+    log_  = logData;
+    clKeys.forEach((key,i) => { CL[key] = clData[i]; renderCL(key); });
 
+    renderPipe();
+    renderLog();
     renderBriefing();
+
+    loadTodayTasks();
+    loadFpsTasks();
+
     document.getElementById('boot').style.display = 'none';
   }
   boot();
