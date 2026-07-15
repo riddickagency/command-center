@@ -92,6 +92,21 @@
   .add-row .ci-input { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
 
   #boot { position: fixed; inset: 0; background: #f7f8fa; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; z-index: 99; }
+
+  /* Todoist task lists */
+  .td-list { list-style: none; }
+  .td-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f3f3; }
+  .td-item:last-child { border-bottom: none; }
+  .td-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; accent-color: #2B5EA7; cursor: pointer; }
+  .td-text { flex: 1; font-size: 13px; line-height: 1.4; }
+  .td-desc { font-size: 11px; color: #999; margin-top: 2px; line-height: 1.4; }
+  .td-meta { font-size: 11px; color: #999; margin-top: 2px; }
+  .td-meta.overdue { color: #dc2626; font-weight: 600; }
+  .td-section-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #2B5EA7; padding: 12px 0 4px; border-top: 1px solid #f0f0f0; margin-top: 4px; }
+  .td-section-head:first-child { border-top: none; margin-top: 0; padding-top: 4px; }
+  .td-empty { font-size: 13px; color: #aaa; padding: 12px 0; font-style: italic; }
+  .td-error { font-size: 12px; color: #dc2626; padding: 8px 0; }
+  .td-completing { opacity: 0.35; transition: opacity 0.4s; }
 </style>
 </head>
 <body>
@@ -120,13 +135,14 @@
 
 <div class="grid">
 
-  <div class="card full" data-checklist="cc_focus_v1">
-    <div class="card-title-row"><div class="card-title">Today's Focus</div></div>
-    <ul class="check-list" id="list-cc_focus_v1"></ul>
-    <div class="add-row">
-      <input class="ci-input" placeholder="Add something to focus on...">
-      <button class="add-log-btn" onclick="addCL('cc_focus_v1', this.previousElementSibling)">Add</button>
+  <div class="card full">
+    <div class="card-title-row">
+      <div class="card-title">Today's Focus — from Todoist</div>
+      <span class="sync-pill" id="tdTodayStatus" style="font-size:11px;color:#aaa"></span>
     </div>
+    <ul class="td-list" id="todayList">
+      <li class="td-item"><span class="td-text td-empty">Loading from Todoist…</span></li>
+    </ul>
   </div>
 
   <div class="card full">
@@ -202,6 +218,14 @@
       <div><button class="add-log-btn" onclick="addPipe()">Add</button></div>
     </div>
     <div class="log-note">Click any cell to edit, or use the form above. Saves to Vercel KV — same data on every device.</div>
+  </div>
+
+  <div class="card full">
+    <div class="card-title-row">
+      <div class="card-title">FPS Pipeline Tasks — from Todoist</div>
+      <span class="sync-pill" id="tdFpsStatus" style="font-size:11px;color:#aaa"></span>
+    </div>
+    <div id="fpsTodoist"><div class="td-empty">Loading from Todoist…</div></div>
   </div>
 
   <div class="card full">
@@ -335,7 +359,7 @@
     {name:"Holy Spirit Catholic School", badge:"drafted", detail:"Touch 1 sent May 22 to HSA (Kait). No reply in 37 days — past 30-day mark. Breakup-style follow-up drafted 6/28 → hsa@hscatholicschool.com"},
     {name:"St. Matthew's Catholic School", badge:"drafted", detail:"Ceri McCombie forwarded to PTA (Ann-Marie Fredlan) May 22. Lawrence replied May 26. No word since — check-in drafted 6/28, asking for a contact name directly."},
     {name:"Holy Family Catholic School", badge:"pending", detail:"Call office: 904-645-9875 · Get parent org name + email"},
-    {name:"Jacksonville Country Day School", badge:"notstarted", detail:"Baymeadows Rd, small elementary (PK–5) — no contact yet"},
+    {name:"Jacksonville Country Day School", badge:"drafted", detail:"Contact found via staff directory: Nathan Renstrom, Director of Auxiliary Services — nrenstrom@jcds.com. Touch 1 drafted 6/28, not yet sent."},
     {name:"Riverside Presbyterian Day School", badge:"notstarted", detail:"Oak St, community-oriented (PK–6) — no contact yet"},
     {name:"Christ the King Catholic School", badge:"notstarted", detail:"National Blue Ribbon, Larkin Rd (PK–8) — no contact yet"},
     {name:"Guardian Catholic School", badge:"notstarted", detail:"Brentwood Ave, family feel (PK–8) — no contact yet"},
@@ -430,11 +454,6 @@
 
   // --- Checklists: Today's Focus, Book scenes, Health, Finance, Household ---
   const CHECKLIST_SEEDS = {
-    cc_focus_v1: [
-      "Review & send the 2 drafted follow-ups in Gmail (Holy Spirit final touch, St. Matthew's check-in)",
-      "Once sent, log them in the Outreach Log below",
-      "Find PTA contacts for the schools still marked Not Started in the pipeline"
-    ],
     cc_book_scenes_v1: [
       "Receiving the breast cancer diagnosis (2021)",
       "Navigating male breast cancer — the stigma, the silence, the isolation",
@@ -483,13 +502,140 @@
     renderCL(key);
   }
 
+  // --- Todoist integration ---
+  const FPS_SECTIONS = {
+    '6h58635wHMmXPPcr': 'Send Now',
+    '6h58637frmG2g2PJ': 'Awaiting Reply',
+    '6h58636j5Gc3JRrr': 'Weekly Block',
+    '6h58636C4hjc52XJ': 'Closed / Cold'
+  };
+  const FPS_SECTION_ORDER = ['6h58635wHMmXPPcr','6h58637frmG2g2PJ','6h58636j5Gc3JRrr','6h58636C4hjc52XJ'];
+
+  let todayTasks_ = [];   // null = load error
+  let fpsTasks_   = [];   // null = load error
+
+  async function loadTodayTasks() {
+    const pill = document.getElementById('tdTodayStatus');
+    try {
+      const r = await fetch('/api/todoist?type=today');
+      if (!r.ok) throw new Error('bad response');
+      const j = await r.json();
+      todayTasks_ = j.tasks || [];
+      if (pill) pill.textContent = `${todayTasks_.length} task${todayTasks_.length !== 1 ? 's' : ''}`;
+    } catch(e) {
+      todayTasks_ = null;
+      if (pill) pill.textContent = 'offline';
+    }
+    renderTodayTasks();
+  }
+
+  function renderTodayTasks() {
+    const el = document.getElementById('todayList');
+    if (!el) return;
+    if (todayTasks_ === null) {
+      el.innerHTML = '<li class="td-item"><span class="td-error">Could not load Todoist — check TODOIST_API_TOKEN in Vercel env vars.</span></li>';
+      return;
+    }
+    if (todayTasks_.length === 0) {
+      el.innerHTML = '<li class="td-item"><span class="td-empty">Nothing due today — you\'re clear.</span></li>';
+      return;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    el.innerHTML = todayTasks_.map(t => {
+      const overdue = t.due && t.due.date < today;
+      const dueLabel = t.due ? (overdue ? `⚠ overdue since ${t.due.date}` : 'due today') : '';
+      return `<li class="td-item" id="td-${t.id}">
+        <input type="checkbox" onchange="completeTodoist('${t.id}',this)">
+        <div class="td-text">
+          <div>${t.content}</div>
+          ${t.description ? `<div class="td-desc">${t.description}</div>` : ''}
+          ${dueLabel ? `<div class="td-meta${overdue ? ' overdue' : ''}">${dueLabel}</div>` : ''}
+        </div>
+      </li>`;
+    }).join('');
+  }
+
+  async function loadFpsTasks() {
+    const pill = document.getElementById('tdFpsStatus');
+    try {
+      const r = await fetch('/api/todoist?type=fps');
+      if (!r.ok) throw new Error('bad response');
+      const j = await r.json();
+      fpsTasks_ = j.tasks || [];
+      if (pill) pill.textContent = `${fpsTasks_.length} open`;
+    } catch(e) {
+      fpsTasks_ = null;
+      if (pill) pill.textContent = 'offline';
+    }
+    renderFpsTasks();
+  }
+
+  function renderFpsTasks() {
+    const el = document.getElementById('fpsTodoist');
+    if (!el) return;
+    if (fpsTasks_ === null) {
+      el.innerHTML = '<div class="td-error">Could not load Todoist — check TODOIST_API_TOKEN in Vercel env vars.</div>';
+      return;
+    }
+    if (fpsTasks_.length === 0) {
+      el.innerHTML = '<div class="td-empty">No open FPS tasks in Todoist.</div>';
+      return;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    // Group by section
+    const grouped = {};
+    fpsTasks_.forEach(t => { const s = t.section_id || 'none'; (grouped[s] = grouped[s] || []).push(t); });
+    const order = [...FPS_SECTION_ORDER, 'none'];
+    let html = '';
+    order.forEach(secId => {
+      const tasks = grouped[secId];
+      if (!tasks || tasks.length === 0) return;
+      html += `<div class="td-section-head">${FPS_SECTIONS[secId] || 'Other'}</div><ul class="td-list">`;
+      tasks.forEach(t => {
+        const overdue = t.due && t.due.date < today;
+        const dueLabel = t.due ? (overdue ? `⚠ overdue ${t.due.date}` : t.due.date) : '';
+        html += `<li class="td-item" id="td-${t.id}">
+          <input type="checkbox" onchange="completeTodoist('${t.id}',this)">
+          <div class="td-text">
+            <div>${t.content}</div>
+            ${t.description ? `<div class="td-desc">${t.description}</div>` : ''}
+            ${dueLabel ? `<div class="td-meta${overdue ? ' overdue' : ''}">${dueLabel}</div>` : ''}
+          </div>
+        </li>`;
+      });
+      html += '</ul>';
+    });
+    el.innerHTML = html;
+  }
+
+  async function completeTodoist(taskId, checkboxEl) {
+    checkboxEl.disabled = true;
+    const item = document.getElementById('td-' + taskId);
+    if (item) item.classList.add('td-completing');
+    try {
+      await fetch('/api/todoist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'complete', taskId })
+      });
+      // Remove from both local arrays so counts update
+      todayTasks_ = Array.isArray(todayTasks_) ? todayTasks_.filter(t => t.id !== taskId) : todayTasks_;
+      fpsTasks_   = Array.isArray(fpsTasks_)   ? fpsTasks_.filter(t => t.id !== taskId)   : fpsTasks_;
+      setTimeout(() => { if (item) item.remove(); renderBriefing(); }, 500);
+    } catch(e) {
+      checkboxEl.checked = false;
+      checkboxEl.disabled = false;
+      if (item) item.classList.remove('td-completing');
+    }
+  }
+
   // --- Briefing: computed client-side from whatever's actually in the data right now ---
   function renderBriefing() {
     const overdue = pipe_.filter(p => p.badge === 'overdue').length;
     const drafted = pipe_.filter(p => p.badge === 'drafted').length;
     const notStarted = pipe_.filter(p => p.badge === 'notstarted' || p.badge === 'pending').length;
     const pendingSends = log_.filter(l => l.sent === 'Drafted').length;
-    const openFocus = (CL.cc_focus_v1 || []).filter(i => !i.done).length;
+    const openFocus = Array.isArray(todayTasks_) ? todayTasks_.length : 0;
     const openHealth = (CL.cc_health_v1 || []).filter(i => !i.done).length;
     const openFinance = (CL.cc_finance_v1 || []).filter(i => !i.done).length;
 
@@ -510,7 +656,7 @@
       parts.push(`${openFinance} open finance to-do${openFinance>1?'s':''}.`);
     }
     if (openFocus > 0) {
-      parts.push(`${openFocus} item${openFocus>1?'s':''} still open on Today's Focus.`);
+      parts.push(`${openFocus} task${openFocus>1?'s':''} due in Todoist today.`);
     }
     const text = parts.length
       ? parts.join(' ') + ' Pick one and protect time for it today.'
@@ -522,17 +668,22 @@
 
   // --- Boot sequence ---
   async function boot() {
-    pipe_ = await kvGet('fps_pipeline_v1', SEED_PIPELINE);
-    renderPipe();
+    // Load Redis-backed data and Todoist in parallel
+    const [pipeData, logData, ...clData] = await Promise.all([
+      kvGet('fps_pipeline_v1', SEED_PIPELINE),
+      kvGet('fps_outreach_log_v1', SEED_LOG),
+      ...Object.keys(CHECKLIST_SEEDS).map(key =>
+        kvGet(key, CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false })))
+      ),
+    ]);
 
-    log_ = await kvGet('fps_outreach_log_v1', SEED_LOG);
-    renderLog();
+    pipe_ = pipeData; renderPipe();
+    log_  = logData;  renderLog();
+    Object.keys(CHECKLIST_SEEDS).forEach((key, i) => { CL[key] = clData[i]; renderCL(key); });
 
-    for (const key of Object.keys(CHECKLIST_SEEDS)) {
-      const seeded = CHECKLIST_SEEDS[key].map(t => ({ text: t, done: false }));
-      CL[key] = await kvGet(key, seeded);
-      renderCL(key);
-    }
+    // Load Todoist (non-blocking — renders independently)
+    loadTodayTasks();
+    loadFpsTasks();
 
     renderBriefing();
     document.getElementById('boot').style.display = 'none';
